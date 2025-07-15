@@ -10,7 +10,16 @@ async function getPets() {
     try {
         const data = await fs.readJson(filePath);
         return data.map(pet => new Pet(
-            pet.id, pet.nombre, pet.tipo, pet.superpoder, pet.duenioId
+            pet.id, 
+            pet.nombre, 
+            pet.tipo, 
+            pet.superpoder, 
+            pet.duenioId,
+            pet.hambre,
+            pet.felicidad,
+            pet.limpieza,
+            pet.enfermedad,
+            pet.ropa
         ));
     } catch (error) {
         console.error(error);
@@ -18,7 +27,7 @@ async function getPets() {
     }
 }
 
-export async function getAvailablePets() {
+async function getAvailablePets() {
     const pets = await getPets();
     return pets.filter(pet => !pet.duenioId);
 }

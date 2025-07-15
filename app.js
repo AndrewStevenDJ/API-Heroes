@@ -1,8 +1,11 @@
 import express from 'express'
 import heroController from './controllers/heroController.js'
 import petController from './controllers/petController.js'
+import objetoController from './controllers/objetoController.js'
 import swaggerUi from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
+import './estadoUpdater.js';
+import { connectDB } from './db.js';
 
 const app = express()
 const PORT = 3000
@@ -11,12 +14,14 @@ app.use(express.json())
 
 // Usar el controlador para la ruta /heroes
 app.use('/heroes', heroController)
-// Usar el controlador para la ruta /pets
-app.use('/pets', petController)
+// Usar el controlador para la ruta /mascotas
+app.use('/mascotas', petController)
+// Usar el controlador para la ruta /objetos
+app.use('/objetos', objetoController)
 
 // Endpoint raíz opcional
 app.get('/', (req, res) => {
-  res.send('¡API de Superhéroes y Mascotas corriendo! Visita /heroes o /pets')
+  res.send('¡API de Superhéroes y Mascotas corriendo! Visita /heroes o /mascotas')
 })
 
 // Configuración de Swagger
@@ -80,6 +85,8 @@ const swaggerOptions = {
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+connectDB();
 
 app.listen(PORT, () => {
   console.log(`Servidor escuchando en http://localhost:${PORT}`)

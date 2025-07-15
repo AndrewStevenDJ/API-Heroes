@@ -1,0 +1,5 @@
+[
+  { "id": 1, "nombre": "Sombrero", "descripcion": "Un bonito sombrero rojo" },
+  { "id": 2, "nombre": "Collar", "descripcion": "Un collar brillante con campana" },
+  { "id": 3, "nombre": "Capa", "descripcion": "Una capa azul para héroes valientes" }
+] 

@@ -254,8 +254,6 @@ router.post('/adoptar-mascota', async (req, res) => {
   });
 });
 
-export default router;
-
 /**
  * @swagger
  * /heroes/city/{city}:
@@ -281,4 +279,68 @@ router.get('/heroes/city/:city', async (req, res) => {
       res.status(500).json({ error: err.message });
     }
   });
+
+/**
+ * @swagger
+ * /heroes/{id}/mascota:
+ *   get:
+ *     summary: Ver la mascota de un superhéroe
+ *     tags: [Heroe]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID del superhéroe
+ *     responses:
+ *       200:
+ *         description: Mascota del superhéroe
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 mensaje:
+ *                   type: string
+ *                 mascota:
+ *                   $ref: '#/components/schemas/Mascota'
+ *       404:
+ *         description: Superhéroe no encontrado
+ */
+router.get('/:id/mascota', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const hero = await heroRepository.getById(id);
+    if (!hero) {
+      return res.status(404).json({ error: 'Superhéroe no encontrado' });
+    }
+    
+    if (!hero.petId) {
+      return res.json({ 
+        mensaje: 'Este héroe aún no tiene una mascota adoptada.',
+        mascota: null 
+      });
+    }
+    
+    const pets = await petRepository.getPets();
+    const mascota = pets.find(pet => pet.id === hero.petId);
+    
+    if (!mascota) {
+      return res.json({ 
+        mensaje: 'La mascota de este héroe no se encuentra disponible.',
+        mascota: null 
+      });
+    }
+    
+    res.json({ 
+      mensaje: `Mascota de ${hero.name}:`,
+      mascota: mascota 
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+export default router;
   
