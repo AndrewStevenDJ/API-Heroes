@@ -9,9 +9,11 @@ import express from 'express';
 import User from '../models/userModel.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const router = express.Router();
-const JWT_SECRET = 'supersecreto'; // Cambia esto por una variable de entorno en producción
+const JWT_SECRET = process.env.JWT_SECRET || 'supersecreto';
 
 /**
  * @swagger

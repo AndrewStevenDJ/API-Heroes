@@ -1,13 +1,10 @@
 import mongoose from 'mongoose';
-
-const uri = 'mongodb+srv://StevenDB:andrewsteven07@clusterhero.qdnsvij.mongodb.net/?retryWrites=true&w=majority&appName=ClusterHero';
+import dotenv from 'dotenv';
+dotenv.config();
 
 export async function connectDB() {
   try {
-    await mongoose.connect(uri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    });
+    await mongoose.connect(process.env.MONGO_URI);
     console.log('Conectado a MongoDB Atlas');
   } catch (error) {
     console.error('Error al conectar a MongoDB:', error);
