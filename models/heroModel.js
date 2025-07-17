@@ -9,6 +9,6 @@ const HeroeSchema = new mongoose.Schema({
   petId: { type: Number, default: null }
 });
 
-const Heroe = mongoose.model('Heroe', HeroeSchema);
+const Heroe = mongoose.model('Heroe', HeroeSchema, 'heroes');
 
 export default Heroe;

@@ -1,5 +1,7 @@
 import express from 'express';
 import petService from '../services/petService.js';
+import Pet from '../models/petModel.js';
+import { authenticate, requireRole } from './authMiddleware.js';
 
 const router = express.Router();
 
@@ -25,11 +27,12 @@ const router = express.Router();
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Mascota'
+ *     security: [{ bearerAuth: [] }]
  */
 // GET /mascotas - obtener todas las mascotas
-router.get('/', async (req, res) => {
+router.get('/', authenticate, requireRole('admin'), async (req, res) => {
   try {
-    const pets = await petService.getAllPets();
+    const pets = await Pet.find();
     res.json(pets);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -51,11 +54,13 @@ router.get('/', async (req, res) => {
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Mascota'
+ *     security: [{ bearerAuth: [] }]
  */
 // GET /mascotas/disponibles - obtener solo las mascotas sin dueño
 router.get('/disponibles', async (req, res) => {
   try {
-    const pets = await petService.getAvailablePets();
+    // Buscar mascotas sin dueño, ya sea ownerId o duenioId en null
+    const pets = await Pet.find({ $or: [ { ownerId: null }, { duenioId: null } ] });
     res.json(pets);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -83,9 +88,10 @@ router.get('/disponibles', async (req, res) => {
  *               $ref: '#/components/schemas/Mascota'
  *       400:
  *         description: Faltan campos obligatorios
+ *     security: [{ bearerAuth: [] }]
  */
 // POST /mascotas - agregar una mascota (permitir id opcional)
-router.post('/', async (req, res) => {
+router.post('/', authenticate, requireRole('admin'), async (req, res) => {
   const { id, nombre, tipo, superpoder } = req.body;
   if (!nombre || !tipo || !superpoder) {
     return res.status(400).json({ error: 'Faltan campos obligatorios: nombre, tipo, superpoder' });
@@ -126,9 +132,10 @@ router.post('/', async (req, res) => {
  *               $ref: '#/components/schemas/Mascota'
  *       404:
  *         description: Mascota no encontrada
+ *     security: [{ bearerAuth: [] }]
  */
 // PUT /mascotas/:id - actualizar una mascota
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticate, requireRole('admin'), async (req, res) => {
   const { id } = req.params;
   const { nombre, tipo, superpoder } = req.body;
   try {
@@ -157,9 +164,10 @@ router.put('/:id', async (req, res) => {
  *         description: Mascota eliminada
  *       404:
  *         description: Mascota no encontrada
+ *     security: [{ bearerAuth: [] }]
  */
 // DELETE /mascotas/:id - eliminar una mascota
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authenticate, requireRole('admin'), async (req, res) => {
   const { id } = req.params;
   try {
     const result = await petService.deletePet(id);
@@ -194,6 +202,7 @@ router.delete('/:id', async (req, res) => {
  *                   type: string
  *       404:
  *         description: Mascota no encontrada
+ *     security: [{ bearerAuth: [] }]
  */
 router.post('/:id/alimentar', async (req, res) => {
   const { id } = req.params;
@@ -230,6 +239,7 @@ router.post('/:id/alimentar', async (req, res) => {
  *                   type: string
  *       404:
  *         description: Mascota no encontrada
+ *     security: [{ bearerAuth: [] }]
  */
 router.post('/:id/banar', async (req, res) => {
   const { id } = req.params;
@@ -266,6 +276,7 @@ router.post('/:id/banar', async (req, res) => {
  *                   type: string
  *       404:
  *         description: Mascota no encontrada
+ *     security: [{ bearerAuth: [] }]
  */
 router.post('/:id/jugar', async (req, res) => {
   const { id } = req.params;
@@ -302,6 +313,7 @@ router.post('/:id/jugar', async (req, res) => {
  *                   type: string
  *       404:
  *         description: Mascota no encontrada
+ *     security: [{ bearerAuth: [] }]
  */
 router.post('/:id/pasear', async (req, res) => {
   const { id } = req.params;
@@ -338,6 +350,7 @@ router.post('/:id/pasear', async (req, res) => {
  *                   type: string
  *       404:
  *         description: Mascota no encontrada
+ *     security: [{ bearerAuth: [] }]
  */
 router.post('/:id/curar', async (req, res) => {
   const { id } = req.params;
@@ -354,7 +367,7 @@ router.post('/:id/curar', async (req, res) => {
  * /mascotas/{id}/ropa:
  *   get:
  *     summary: Ver la ropa de una mascota
- *     tags: [Personalizacion]
+ *     tags: [Personalización]
  *     parameters:
  *       - in: path
  *         name: id
@@ -378,6 +391,7 @@ router.post('/:id/curar', async (req, res) => {
  *                     type: string
  *       404:
  *         description: Mascota no encontrada
+ *     security: [{ bearerAuth: [] }]
  */
 router.get('/:id/ropa', async (req, res) => {
   const { id } = req.params;
@@ -394,7 +408,7 @@ router.get('/:id/ropa', async (req, res) => {
  * /mascotas/{id}/ropa:
  *   post:
  *     summary: Cambiar la ropa de una mascota
- *     tags: [Personalizacion]
+ *     tags: [Personalización]
  *     parameters:
  *       - in: path
  *         name: id
@@ -426,6 +440,7 @@ router.get('/:id/ropa', async (req, res) => {
  *                   type: string
  *       404:
  *         description: Mascota no encontrada
+ *     security: [{ bearerAuth: [] }]
  */
 router.post('/:id/ropa', async (req, res) => {
   const { id } = req.params;
@@ -481,6 +496,7 @@ router.post('/:id/ropa', async (req, res) => {
  *                         type: string
  *       404:
  *         description: Mascota no encontrada
+ *     security: [{ bearerAuth: [] }]
  */
 router.get('/:id/estado', async (req, res) => {
   const { id } = req.params;
@@ -497,7 +513,7 @@ router.get('/:id/estado', async (req, res) => {
  * /mascotas/{id}/objetos:
  *   post:
  *     summary: Agregar un objeto a la mascota
- *     tags: [Personalizacion]
+ *     tags: [Personalización]
  *     parameters:
  *       - in: path
  *         name: id
@@ -522,6 +538,7 @@ router.get('/:id/estado', async (req, res) => {
  *         description: Error de validación
  *       404:
  *         description: Mascota u objeto no encontrado
+ *     security: [{ bearerAuth: [] }]
  */
 router.post('/:id/objetos', async (req, res) => {
   const { id } = req.params;
@@ -540,7 +557,7 @@ router.post('/:id/objetos', async (req, res) => {
  * /mascotas/{id}/objetos/{objetoId}:
  *   delete:
  *     summary: Quitar un objeto de la mascota
- *     tags: [Personalizacion]
+ *     tags: [Personalización]
  *     parameters:
  *       - in: path
  *         name: id
@@ -559,6 +576,7 @@ router.post('/:id/objetos', async (req, res) => {
  *         description: Objeto eliminado
  *       404:
  *         description: Mascota u objeto no encontrado
+ *     security: [{ bearerAuth: [] }]
  */
 router.delete('/:id/objetos/:objetoId', async (req, res) => {
   const { id, objetoId } = req.params;
@@ -567,6 +585,49 @@ router.delete('/:id/objetos/:objetoId', async (req, res) => {
     res.json(result);
   } catch (error) {
     res.status(404).json({ error: error.message });
+  }
+});
+
+/**
+ * @swagger
+ * /mascotas/adoptar/{id}:
+ *   post:
+ *     summary: Adoptar una mascota disponible
+ *     tags: [Mascota]
+ *     security: [{ bearerAuth: [] }]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID de la mascota a adoptar
+ *     responses:
+ *       200:
+ *         description: Mascota adoptada con éxito
+ *       400:
+ *         description: Mascota no disponible o usuario ya tiene mascota
+ *       404:
+ *         description: Mascota no encontrada
+ */
+router.post('/adoptar/:id', authenticate, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    // Verificar que el usuario no tenga ya una mascota
+    const yaTiene = await Pet.findOne({ ownerId: userId });
+    if (yaTiene) {
+      return res.status(400).json({ error: 'Ya tienes una mascota adoptada' });
+    }
+    // Verificar que la mascota esté disponible
+    const mascota = await Pet.findOne({ _id: req.params.id, $or: [ { ownerId: null }, { duenioId: null } ] });
+    if (!mascota) {
+      return res.status(400).json({ error: 'Mascota no disponible o ya fue adoptada' });
+    }
+    mascota.ownerId = userId;
+    await mascota.save();
+    res.json({ mensaje: '¡Mascota adoptada con éxito!', mascota });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 

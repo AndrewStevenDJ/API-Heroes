@@ -6,6 +6,8 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
 import './estadoUpdater.js';
 import { connectDB } from './db.js';
+import userController from './controllers/userController.js';
+import userPetController from './controllers/userPetController.js';
 
 const app = express()
 const PORT = 3000
@@ -18,6 +20,9 @@ app.use('/heroes', heroController)
 app.use('/mascotas', petController)
 // Usar el controlador para la ruta /objetos
 app.use('/objetos', objetoController)
+// Usar el controlador para la ruta /auth
+app.use('/auth', userController);
+app.use('/mis-mascotas', userPetController);
 
 // Endpoint raíz opcional
 app.get('/', (req, res) => {
@@ -31,9 +36,42 @@ const swaggerOptions = {
     info: {
       title: 'API SuperHeroes',
       version: '1.0.0',
-      description: 'Documentación de la API de SuperHeroes y Mascotas',
+      description: 'Documentación de la API de SuperHeroes y Mascotas.\n\nPara acceder a los endpoints protegidos, inicia sesión y copia el token JWT. Haz clic en el botón Authorize (candado) y pégalo así: Bearer <tu_token>',
     },
+    tags: [
+      {
+        name: 'Autenticación',
+        description: 'Registro y login de usuarios'
+      },
+      {
+        name: 'Mascota',
+        description: 'Endpoints para gestión de mascotas'
+      },
+      {
+        name: 'Estado',
+        description: 'Ver el estado de la mascota'
+      },
+      {
+        name: 'Cuidado',
+        description: 'Acciones de cuidado de la mascota (alimentar, bañar, jugar, pasear, curar)'
+      },
+      {
+        name: 'Personalización',
+        description: 'Personalización de la mascota con objetos'
+      },
+      {
+        name: 'Héroes',
+        description: 'Gestión de héroes y sus datos'
+      }
+    ],
     components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
       schemas: {
         Heroe: {
           type: 'object',

@@ -10,7 +10,7 @@ const petSchema = new mongoose.Schema({
   nombre: { type: String, required: true },
   tipo: { type: String, required: true },
   superpoder: { type: String, required: true },
-  duenioId: { type: Number, default: null },
+  ownerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
   hambre: { type: Number, default: 15 },
   felicidad: { type: Number, default: 20 },
   limpieza: { type: Number, default: 15 },
@@ -18,5 +18,5 @@ const petSchema = new mongoose.Schema({
   ropa: { type: [ropaSchema], default: [] }
 });
 
-const Pet = mongoose.model('Pet', petSchema);
+const Pet = mongoose.model('Pet', petSchema, 'pets');
 export default Pet; 

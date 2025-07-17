@@ -1,12 +1,13 @@
 import express from 'express';
 import Objeto from '../models/objetoModel.js';
+import { authenticate, requireRole } from './authMiddleware.js';
 
 const router = express.Router();
 
 /**
  * @swagger
  * tags:
- *   name: Personalizacion
+ *   name: Personalización
  *   description: Endpoints para gestionar objetos de personalización (ropa)
  */
 
@@ -15,7 +16,7 @@ const router = express.Router();
  * /objetos:
  *   get:
  *     summary: Obtener todos los objetos de personalización
- *     tags: [Personalizacion]
+ *     tags: [Personalización]
  *     responses:
  *       200:
  *         description: Lista de objetos
@@ -32,6 +33,7 @@ const router = express.Router();
  *                     type: string
  *                   descripcion:
  *                     type: string
+ *     security: [{ bearerAuth: [] }]
  */
 // Obtener todos los objetos
 router.get('/', async (req, res) => {
@@ -48,7 +50,7 @@ router.get('/', async (req, res) => {
  * /objetos:
  *   post:
  *     summary: Agregar un nuevo objeto de personalización
- *     tags: [Personalizacion]
+ *     tags: [Personalización]
  *     requestBody:
  *       required: true
  *       content:
@@ -72,9 +74,10 @@ router.get('/', async (req, res) => {
  *               $ref: '#/components/schemas/Objeto'
  *       400:
  *         description: Faltan campos requeridos
+ *     security: [{ bearerAuth: [] }]
  */
 // Agregar un nuevo objeto
-router.post('/', async (req, res) => {
+router.post('/', authenticate, requireRole('admin'), async (req, res) => {
   const { nombre, descripcion } = req.body;
   if (!nombre || !descripcion) {
     return res.status(400).json({ error: 'Faltan campos requeridos' });
@@ -93,7 +96,7 @@ router.post('/', async (req, res) => {
  * /objetos/{id}:
  *   put:
  *     summary: Modificar un objeto de personalización
- *     tags: [Personalizacion]
+ *     tags: [Personalización]
  *     parameters:
  *       - in: path
  *         name: id
@@ -117,9 +120,10 @@ router.post('/', async (req, res) => {
  *         description: Objeto modificado
  *       404:
  *         description: Objeto no encontrado
+ *     security: [{ bearerAuth: [] }]
  */
 // Modificar un objeto existente
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticate, requireRole('admin'), async (req, res) => {
   const { id } = req.params;
   const { nombre, descripcion } = req.body;
   try {
@@ -139,7 +143,7 @@ router.put('/:id', async (req, res) => {
  * /objetos/{id}:
  *   delete:
  *     summary: Eliminar un objeto de personalización
- *     tags: [Personalizacion]
+ *     tags: [Personalización]
  *     parameters:
  *       - in: path
  *         name: id
@@ -152,9 +156,10 @@ router.put('/:id', async (req, res) => {
  *         description: Objeto eliminado
  *       404:
  *         description: Objeto no encontrado
+ *     security: [{ bearerAuth: [] }]
  */
 // Eliminar un objeto
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authenticate, requireRole('admin'), async (req, res) => {
   const { id } = req.params;
   try {
     const eliminado = await Objeto.findByIdAndDelete(id);

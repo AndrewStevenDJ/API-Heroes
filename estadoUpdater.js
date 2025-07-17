@@ -24,12 +24,12 @@ function guardarMascotas(mascotas) {
 function actualizarEstados() {
   const mascotas = leerMascotas();
   mascotas.forEach(mascota => {
-    // Aumenta el hambre en +1 (máximo 20)
-    mascota.hambre = Math.min((mascota.hambre || 0) + 1, 20);
-    // Disminuye la felicidad en -1 (mínimo 0)
-    mascota.felicidad = Math.max((mascota.felicidad || 0) - 1, 0);
-    // Disminuye la limpieza en -1 (mínimo 0)
-    mascota.limpieza = Math.max((mascota.limpieza || 0) - 1, 0);
+    // Aumenta el hambre en +2 (máximo 20)
+    mascota.hambre = Math.min((mascota.hambre || 0) + 2, 20);
+    // Disminuye la felicidad en -2 (mínimo 0)
+    mascota.felicidad = Math.max((mascota.felicidad || 0) - 2, 0);
+    // Disminuye la limpieza en -2 (mínimo 0)
+    mascota.limpieza = Math.max((mascota.limpieza || 0) - 2, 0);
 
     // Enfermedades
     if (mascota.hambre >= 20) {
@@ -45,8 +45,8 @@ function actualizarEstados() {
   guardarMascotas(mascotas);
 }
 
-// Ejecutar cada 60 segundos
-setInterval(actualizarEstados, 60000);
+// Ejecutar cada 30 segundos
+setInterval(actualizarEstados, 30000);
 
 // Ejecutar una vez al iniciar
 actualizarEstados(); 

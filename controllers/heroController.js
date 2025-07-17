@@ -4,13 +4,14 @@ import heroService from '../services/heroService.js';
 import Hero from "../models/heroModel.js";
 import heroRepository from '../repositories/heroRepository.js';
 import petRepository from '../repositories/petRepository.js';
+import { authenticate, requireRole } from './authMiddleware.js';
 
 const router = express.Router();
 
 /**
  * @swagger
  * tags:
- *   name: Heroe
+ *   name: Héroes
  *   description: Endpoints para gestión de superhéroes
  */
 
@@ -19,7 +20,7 @@ const router = express.Router();
  * /heroes:
  *   get:
  *     summary: Obtener todos los superhéroes
- *     tags: [Heroe]
+ *     tags: [Héroes]
  *     responses:
  *       200:
  *         description: Lista de superhéroes
@@ -29,11 +30,12 @@ const router = express.Router();
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Heroe'
+ *     security: [{ bearerAuth: [] }]
  */
 // GET /heroes - obtener todos los superhéroes
-router.get('/', async (req, res) => {
+router.get('/', authenticate, requireRole('admin'), async (req, res) => {
   try {
-    const heroes = await heroService.getAllHeroes();
+    const heroes = await Hero.find();
     res.json(heroes);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -45,7 +47,7 @@ router.get('/', async (req, res) => {
  * /heroes:
  *   post:
  *     summary: Agregar un superhéroe
- *     tags: [Heroe]
+ *     tags: [Héroes]
  *     requestBody:
  *       required: true
  *       content:
@@ -61,9 +63,10 @@ router.get('/', async (req, res) => {
  *               $ref: '#/components/schemas/Heroe'
  *       400:
  *         description: Faltan campos obligatorios
+ *     security: [{ bearerAuth: [] }]
  */
 // POST /heroes - agregar un superhéroe (permitir id opcional)
-router.post('/', async (req, res) => {
+router.post('/', authenticate, requireRole('admin'), async (req, res) => {
   const { id, name, alias, city, team } = req.body;
   if (!name || !alias || !city || !team) {
     return res.status(400).json({ error: 'Faltan campos obligatorios: name, alias, city, team' });
@@ -81,7 +84,7 @@ router.post('/', async (req, res) => {
  * /heroes/{id}:
  *   put:
  *     summary: Actualizar un superhéroe
- *     tags: [Heroe]
+ *     tags: [Héroes]
  *     parameters:
  *       - in: path
  *         name: id
@@ -104,9 +107,10 @@ router.post('/', async (req, res) => {
  *               $ref: '#/components/schemas/Heroe'
  *       404:
  *         description: Superhéroe no encontrado
+ *     security: [{ bearerAuth: [] }]
  */
 // PUT /heroes/:id - actualizar un superhéroe
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticate, requireRole('admin'), async (req, res) => {
   const { id } = req.params;
   const { name, alias, city, team } = req.body;
   try {
@@ -122,7 +126,7 @@ router.put('/:id', async (req, res) => {
  * /heroes/{id}:
  *   delete:
  *     summary: Eliminar un superhéroe
- *     tags: [Heroe]
+ *     tags: [Héroes]
  *     parameters:
  *       - in: path
  *         name: id
@@ -135,9 +139,10 @@ router.put('/:id', async (req, res) => {
  *         description: Superhéroe eliminado
  *       404:
  *         description: Superhéroe no encontrado
+ *     security: [{ bearerAuth: [] }]
  */
 // DELETE /heroes/:id - eliminar un superhéroe
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authenticate, requireRole('admin'), async (req, res) => {
   const { id } = req.params;
   try {
     const result = await heroService.deleteHero(id);
@@ -152,7 +157,7 @@ router.delete('/:id', async (req, res) => {
  * /heroes/{id}/adoptar-mascota:
  *   post:
  *     summary: Asignar mascota a un superhéroe
- *     tags: [Heroe]
+ *     tags: [Héroes]
  *     parameters:
  *       - in: path
  *         name: id
@@ -175,9 +180,10 @@ router.delete('/:id', async (req, res) => {
  *         description: Mascota asignada al superhéroe
  *       400:
  *         description: Error en la asignación
+ *     security: [{ bearerAuth: [] }]
  */
 // POST /heroes/:id/adoptar-mascota - asignar mascota a un superhéroe
-router.post('/:id/adoptar-mascota', async (req, res) => {
+router.post('/:id/adoptar-mascota', authenticate, requireRole('admin'), async (req, res) => {
   const { id } = req.params;
   const { petId } = req.body;
   if (!petId) {
@@ -196,7 +202,7 @@ router.post('/:id/adoptar-mascota', async (req, res) => {
  * /heroes/adoptar-mascota:
  *   post:
  *     summary: El héroe adopta una mascota disponible
- *     tags: [Heroe]
+ *     tags: [Héroes]
  *     requestBody:
  *       required: true
  *       content:
@@ -212,6 +218,7 @@ router.post('/:id/adoptar-mascota', async (req, res) => {
  *         description: Proceso de adopción exitoso
  *       400:
  *         description: No hay mascotas disponibles o héroe no encontrado
+ *     security: [{ bearerAuth: [] }]
  */
 router.post('/adoptar-mascota', async (req, res) => {
   const { heroId } = req.body;
@@ -259,7 +266,7 @@ router.post('/adoptar-mascota', async (req, res) => {
  * /heroes/city/{city}:
  *   get:
  *     summary: Obtener héroes por ciudad
- *     tags: [Heroe]
+ *     tags: [Héroes]
  *     parameters:
  *       - in: path
  *         name: city
@@ -270,6 +277,7 @@ router.post('/adoptar-mascota', async (req, res) => {
  *     responses:
  *       200:
  *         description: Lista de héroes en la ciudad
+ *     security: [{ bearerAuth: [] }]
  */
 router.get('/heroes/city/:city', async (req, res) => {
     try {
@@ -285,7 +293,7 @@ router.get('/heroes/city/:city', async (req, res) => {
  * /heroes/{id}/mascota:
  *   get:
  *     summary: Ver la mascota de un superhéroe
- *     tags: [Heroe]
+ *     tags: [Héroes]
  *     parameters:
  *       - in: path
  *         name: id
@@ -307,6 +315,7 @@ router.get('/heroes/city/:city', async (req, res) => {
  *                   $ref: '#/components/schemas/Mascota'
  *       404:
  *         description: Superhéroe no encontrado
+ *     security: [{ bearerAuth: [] }]
  */
 router.get('/:id/mascota', async (req, res) => {
   const { id } = req.params;
