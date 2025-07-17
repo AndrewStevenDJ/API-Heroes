@@ -95,17 +95,22 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
+    console.log('Intentando login para:', username);
     const user = await User.findOne({ username });
     if (!user) {
+      console.log('Usuario no encontrado');
       return res.status(400).json({ error: 'Usuario o contraseña incorrectos' });
     }
+    console.log('Usuario encontrado:', user);
     const valid = await bcrypt.compare(password, user.password);
+    console.log('¿Contraseña válida?', valid);
     if (!valid) {
       return res.status(400).json({ error: 'Usuario o contraseña incorrectos' });
     }
     const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: '1d' });
     res.json({ token, role: user.role });
   } catch (err) {
+    console.error('Error en el login:', err);
     res.status(500).json({ error: 'Error en el login' });
   }
 });
