@@ -27,7 +27,7 @@ async function actualizarEstados() {
       }
       await mascota.save();
     }
-    await mongoose.disconnect();
+    // await mongoose.disconnect(); // No desconectar aquí, deja la conexión abierta
     console.log('Estados de mascotas actualizados');
   } catch (err) {
     console.error('Error al actualizar estados de mascotas:', err);
