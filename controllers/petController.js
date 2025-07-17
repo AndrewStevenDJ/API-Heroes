@@ -92,12 +92,16 @@ router.get('/disponibles', async (req, res) => {
  */
 // POST /mascotas - agregar una mascota (permitir id opcional)
 router.post('/', authenticate, requireRole('admin'), async (req, res) => {
-  const { id, nombre, tipo, superpoder } = req.body;
+  const { nombre, tipo, superpoder } = req.body;
   if (!nombre || !tipo || !superpoder) {
     return res.status(400).json({ error: 'Faltan campos obligatorios: nombre, tipo, superpoder' });
   }
   try {
-    const newPet = await petService.addPet({ id, nombre, tipo, superpoder });
+    // Obtener el siguiente id secuencial
+    const lastPet = await Pet.findOne().sort({ id: -1 });
+    const nextId = lastPet && lastPet.id ? lastPet.id + 1 : 1;
+    const newPet = new Pet({ id: nextId, nombre, tipo, superpoder });
+    await newPet.save();
     res.status(201).json(newPet);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -207,6 +211,8 @@ router.delete('/:id', authenticate, requireRole('admin'), async (req, res) => {
 router.post('/:id/alimentar', async (req, res) => {
   const { id } = req.params;
   try {
+    const mascota = await findPetByAnyId(id);
+    if (!mascota) throw new Error('Mascota no encontrada');
     const resultado = await petService.alimentarMascota(id);
     res.json(resultado);
   } catch (error) {
@@ -244,6 +250,8 @@ router.post('/:id/alimentar', async (req, res) => {
 router.post('/:id/banar', async (req, res) => {
   const { id } = req.params;
   try {
+    const mascota = await findPetByAnyId(id);
+    if (!mascota) throw new Error('Mascota no encontrada');
     const resultado = await petService.banarMascota(id);
     res.json(resultado);
   } catch (error) {
@@ -281,6 +289,8 @@ router.post('/:id/banar', async (req, res) => {
 router.post('/:id/jugar', async (req, res) => {
   const { id } = req.params;
   try {
+    const mascota = await findPetByAnyId(id);
+    if (!mascota) throw new Error('Mascota no encontrada');
     const resultado = await petService.jugarMascota(id);
     res.json(resultado);
   } catch (error) {
@@ -318,6 +328,8 @@ router.post('/:id/jugar', async (req, res) => {
 router.post('/:id/pasear', async (req, res) => {
   const { id } = req.params;
   try {
+    const mascota = await findPetByAnyId(id);
+    if (!mascota) throw new Error('Mascota no encontrada');
     const resultado = await petService.pasearMascota(id);
     res.json(resultado);
   } catch (error) {
@@ -355,6 +367,8 @@ router.post('/:id/pasear', async (req, res) => {
 router.post('/:id/curar', async (req, res) => {
   const { id } = req.params;
   try {
+    const mascota = await findPetByAnyId(id);
+    if (!mascota) throw new Error('Mascota no encontrada');
     const resultado = await petService.curarMascota(id);
     res.json(resultado);
   } catch (error) {
@@ -396,6 +410,8 @@ router.post('/:id/curar', async (req, res) => {
 router.get('/:id/ropa', async (req, res) => {
   const { id } = req.params;
   try {
+    const mascota = await findPetByAnyId(id);
+    if (!mascota) throw new Error('Mascota no encontrada');
     const resultado = await petService.verRopa(id);
     res.json(resultado);
   } catch (error) {
@@ -449,6 +465,8 @@ router.post('/:id/ropa', async (req, res) => {
     return res.status(400).json({ error: 'Debes enviar un array de ropa' });
   }
   try {
+    const mascota = await findPetByAnyId(id);
+    if (!mascota) throw new Error('Mascota no encontrada');
     const resultado = await petService.cambiarRopa(id, ropa);
     res.json(resultado);
   } catch (error) {
@@ -501,6 +519,8 @@ router.post('/:id/ropa', async (req, res) => {
 router.get('/:id/estado', async (req, res) => {
   const { id } = req.params;
   try {
+    const mascota = await findPetByAnyId(id);
+    if (!mascota) throw new Error('Mascota no encontrada');
     const resultado = await petService.verEstado(id);
     res.json(resultado);
   } catch (error) {
@@ -545,6 +565,8 @@ router.post('/:id/objetos', async (req, res) => {
   const { objetoId } = req.body;
   if (!objetoId) return res.status(400).json({ error: 'Falta el objetoId' });
   try {
+    const mascota = await findPetByAnyId(id);
+    if (!mascota) throw new Error('Mascota no encontrada');
     const result = await petService.agregarObjetoAMascota(id, objetoId);
     res.json(result);
   } catch (error) {
@@ -581,6 +603,8 @@ router.post('/:id/objetos', async (req, res) => {
 router.delete('/:id/objetos/:objetoId', async (req, res) => {
   const { id, objetoId } = req.params;
   try {
+    const mascota = await findPetByAnyId(id);
+    if (!mascota) throw new Error('Mascota no encontrada');
     const result = await petService.quitarObjetoAMascota(id, objetoId);
     res.json(result);
   } catch (error) {
@@ -700,5 +724,16 @@ router.post('/adoptar/:id', authenticate, async (req, res) => {
  *           items:
  *             type: string
  */
+
+// Modificar endpoints relevantes para buscar por id o _id
+function findPetByAnyId(id) {
+  if (!isNaN(Number(id))) {
+    // Si es numérico, buscar por id
+    return Pet.findOne({ id: Number(id) });
+  } else {
+    // Si es ObjectId, buscar por _id
+    return Pet.findById(id);
+  }
+}
 
 export default router; 

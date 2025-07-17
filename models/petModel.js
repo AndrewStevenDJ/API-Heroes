@@ -7,6 +7,7 @@ const ropaSchema = new mongoose.Schema({
 }, { _id: false });
 
 const petSchema = new mongoose.Schema({
+  id: { type: Number, unique: true },
   nombre: { type: String, required: true },
   tipo: { type: String, required: true },
   superpoder: { type: String, required: true },
