@@ -16,7 +16,7 @@ async function migrar() {
   const heroesData = JSON.parse(fs.readFileSync(heroesPath, 'utf-8'));
   try {
     await Heroe.insertMany(heroesData, { ordered: false });
-    console.log('Superhéroes migrados');
+  console.log('Superhéroes migrados');
   } catch (err) {
     if (err.code === 11000) {
       console.log('Algunos superhéroes ya existen, se omitieron duplicados.');
@@ -30,7 +30,7 @@ async function migrar() {
   const petsData = JSON.parse(fs.readFileSync(petsPath, 'utf-8'));
   try {
     await Pet.insertMany(petsData, { ordered: false });
-    console.log('Mascotas migradas');
+  console.log('Mascotas migradas');
   } catch (err) {
     if (err.code === 11000) {
       console.log('Algunas mascotas ya existen, se omitieron duplicados.');
@@ -44,7 +44,7 @@ async function migrar() {
   const objetosData = JSON.parse(fs.readFileSync(objetosPath, 'utf-8'));
   try {
     await Objeto.insertMany(objetosData, { ordered: false });
-    console.log('Objetos migrados');
+  console.log('Objetos migrados');
   } catch (err) {
     if (err.code === 11000) {
       console.log('Algunos objetos ya existen, se omitieron duplicados.');
