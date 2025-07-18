@@ -2,6 +2,7 @@ import express from 'express';
 import petService from '../services/petService.js';
 import Pet from '../models/petModel.js';
 import { authenticate, requireRole } from './authMiddleware.js';
+import mongoose from 'mongoose';
 
 const router = express.Router();
 
@@ -727,13 +728,16 @@ router.post('/adoptar/:id', authenticate, async (req, res) => {
 
 // Modificar endpoints relevantes para buscar por id o _id
 function findPetByAnyId(id) {
-  if (!isNaN(Number(id))) {
-    // Si es numérico, buscar por id
-    return Pet.findOne({ id: Number(id) });
-  } else {
-    // Si es ObjectId, buscar por _id
+  // Si es un ObjectId válido, buscar por _id
+  if (mongoose.Types.ObjectId.isValid(id)) {
     return Pet.findById(id);
   }
+  // Si es numérico, buscar por id
+  if (!isNaN(Number(id))) {
+    return Pet.findOne({ id: Number(id) });
+  }
+  // Si no es válido, retornar null
+  return null;
 }
 
 export default router; 
