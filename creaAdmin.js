@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import User from './models/userModel.js';
 
-const MONGO_URI ='mongodb+srv://StevenDB:andrewsteven07@clusterhero.qdnsvij.mongodb.net/?retryWrites=true&w=majority&appName=ClusterHero'; // Reemplaza esto por tu string de conexión real
+const MONGO_URI ='mongodb+srv://StevenDB:andrewsteven@clusterhero.qdnsvij.mongodb.net/?retryWrites=true&w=majority&appName=ClusterHero'; // Contraseña corregida
 
 async function crearAdmin() {
   await mongoose.connect(MONGO_URI);
