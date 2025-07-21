@@ -726,15 +726,15 @@ router.post('/adoptar/:id', authenticate, async (req, res) => {
  *             type: string
  */
 
-// Modificar endpoints relevantes para buscar por id o _id
+// Modificar endpoints relevantes para buscar por id secuencial o _id
 function findPetByAnyId(id) {
+  // Si es numérico, buscar por id secuencial
+  if (!isNaN(Number(id))) {
+    return Pet.findOne({ id: Number(id) });
+  }
   // Si es un ObjectId válido, buscar por _id
   if (mongoose.Types.ObjectId.isValid(id)) {
     return Pet.findById(id);
-  }
-  // Si es numérico, buscar por id
-  if (!isNaN(Number(id))) {
-    return Pet.findOne({ id: Number(id) });
   }
   // Si no es válido, retornar null
   return null;
