@@ -60,8 +60,8 @@ router.get('/', authenticate, requireRole('admin'), async (req, res) => {
 // GET /mascotas/disponibles - obtener solo las mascotas sin dueño
 router.get('/disponibles', async (req, res) => {
   try {
-    // Buscar mascotas sin dueño, ya sea ownerId o duenioId en null
-    const pets = await Pet.find({ $or: [ { ownerId: null }, { duenioId: null } ] });
+    // Buscar mascotas sin dueño (ownerId en null)
+    const pets = await Pet.find({ ownerId: null });
     res.json(pets);
   } catch (error) {
     res.status(500).json({ error: error.message });
