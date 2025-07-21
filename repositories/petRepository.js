@@ -9,18 +9,7 @@ const filePath = join(__dirname, '../pets.json');
 async function getPets() {
     try {
         const data = await fs.readJson(filePath);
-        return data.map(pet => new Pet(
-            pet.id, 
-            pet.nombre, 
-            pet.tipo, 
-            pet.superpoder, 
-            pet.duenioId,
-            pet.hambre,
-            pet.felicidad,
-            pet.limpieza,
-            pet.enfermedad,
-            pet.ropa
-        ));
+        return data.map(pet => new Pet(pet));
     } catch (error) {
         console.error(error);
         return [];
