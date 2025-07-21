@@ -184,437 +184,6 @@ router.delete('/:id', authenticate, requireRole('admin'), async (req, res) => {
 
 /**
  * @swagger
- * /mascotas/{id}/alimentar:
- *   post:
- *     summary: Alimentar a una mascota
- *     tags: [Cuidado]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: ID de la mascota
- *     responses:
- *       200:
- *         description: Mensaje de resultado
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 mensaje:
- *                   type: string
- *       404:
- *         description: Mascota no encontrada
- *     security: [{ bearerAuth: [] }]
- */
-router.post('/:id/alimentar', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const mascota = await findPetByAnyId(id);
-    if (!mascota) throw new Error('Mascota no encontrada');
-    const resultado = await petService.alimentarMascota(id);
-    res.json(resultado);
-  } catch (error) {
-    res.status(404).json({ error: error.message });
-  }
-});
-
-/**
- * @swagger
- * /mascotas/{id}/banar:
- *   post:
- *     summary: Bañar a una mascota
- *     tags: [Cuidado]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: ID de la mascota
- *     responses:
- *       200:
- *         description: Mensaje de resultado
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 mensaje:
- *                   type: string
- *       404:
- *         description: Mascota no encontrada
- *     security: [{ bearerAuth: [] }]
- */
-router.post('/:id/banar', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const mascota = await findPetByAnyId(id);
-    if (!mascota) throw new Error('Mascota no encontrada');
-    const resultado = await petService.banarMascota(id);
-    res.json(resultado);
-  } catch (error) {
-    res.status(404).json({ error: error.message });
-  }
-});
-
-/**
- * @swagger
- * /mascotas/{id}/jugar:
- *   post:
- *     summary: Jugar con una mascota
- *     tags: [Cuidado]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: ID de la mascota
- *     responses:
- *       200:
- *         description: Mensaje de resultado
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 mensaje:
- *                   type: string
- *       404:
- *         description: Mascota no encontrada
- *     security: [{ bearerAuth: [] }]
- */
-router.post('/:id/jugar', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const mascota = await findPetByAnyId(id);
-    if (!mascota) throw new Error('Mascota no encontrada');
-    const resultado = await petService.jugarMascota(id);
-    res.json(resultado);
-  } catch (error) {
-    res.status(404).json({ error: error.message });
-  }
-});
-
-/**
- * @swagger
- * /mascotas/{id}/pasear:
- *   post:
- *     summary: Pasear con una mascota
- *     tags: [Cuidado]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: ID de la mascota
- *     responses:
- *       200:
- *         description: Mensaje de resultado
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 mensaje:
- *                   type: string
- *       404:
- *         description: Mascota no encontrada
- *     security: [{ bearerAuth: [] }]
- */
-router.post('/:id/pasear', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const mascota = await findPetByAnyId(id);
-    if (!mascota) throw new Error('Mascota no encontrada');
-    const resultado = await petService.pasearMascota(id);
-    res.json(resultado);
-  } catch (error) {
-    res.status(404).json({ error: error.message });
-  }
-});
-
-/**
- * @swagger
- * /mascotas/{id}/curar:
- *   post:
- *     summary: Curar a una mascota enferma
- *     tags: [Cuidado]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: ID de la mascota
- *     responses:
- *       200:
- *         description: Mensaje de resultado
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 mensaje:
- *                   type: string
- *       404:
- *         description: Mascota no encontrada
- *     security: [{ bearerAuth: [] }]
- */
-router.post('/:id/curar', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const mascota = await findPetByAnyId(id);
-    if (!mascota) throw new Error('Mascota no encontrada');
-    const resultado = await petService.curarMascota(id);
-    res.json(resultado);
-  } catch (error) {
-    res.status(404).json({ error: error.message });
-  }
-});
-
-/**
- * @swagger
- * /mascotas/{id}/ropa:
- *   get:
- *     summary: Ver la ropa de una mascota
- *     tags: [Personalización]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: ID de la mascota
- *     responses:
- *       200:
- *         description: Ropa de la mascota
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 mensaje:
- *                   type: string
- *                 ropa:
- *                   type: array
- *                   items:
- *                     type: string
- *       404:
- *         description: Mascota no encontrada
- *     security: [{ bearerAuth: [] }]
- */
-router.get('/:id/ropa', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const mascota = await findPetByAnyId(id);
-    if (!mascota) throw new Error('Mascota no encontrada');
-    const resultado = await petService.verRopa(id);
-    res.json(resultado);
-  } catch (error) {
-    res.status(404).json({ error: error.message });
-  }
-});
-
-/**
- * @swagger
- * /mascotas/{id}/ropa:
- *   post:
- *     summary: Cambiar la ropa de una mascota
- *     tags: [Personalización]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: ID de la mascota
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               ropa:
- *                 type: array
- *                 items:
- *                   type: string
- *                 description: Lista de prendas de ropa
- *     responses:
- *       200:
- *         description: Mensaje de resultado
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 mensaje:
- *                   type: string
- *       404:
- *         description: Mascota no encontrada
- *     security: [{ bearerAuth: [] }]
- */
-router.post('/:id/ropa', async (req, res) => {
-  const { id } = req.params;
-  const { ropa } = req.body;
-  if (!ropa || !Array.isArray(ropa)) {
-    return res.status(400).json({ error: 'Debes enviar un array de ropa' });
-  }
-  try {
-    const mascota = await findPetByAnyId(id);
-    if (!mascota) throw new Error('Mascota no encontrada');
-    const resultado = await petService.cambiarRopa(id, ropa);
-    res.json(resultado);
-  } catch (error) {
-    res.status(404).json({ error: error.message });
-  }
-});
-
-/**
- * @swagger
- * /mascotas/{id}/estado:
- *   get:
- *     summary: Ver el estado completo de una mascota
- *     tags: [Estado]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: ID de la mascota
- *     responses:
- *       200:
- *         description: Estado de la mascota
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 mensaje:
- *                   type: string
- *                 estado:
- *                   type: object
- *                   properties:
- *                     hambre:
- *                       type: number
- *                     felicidad:
- *                       type: number
- *                     limpieza:
- *                       type: number
- *                     enfermedad:
- *                       type: string
- *                     ropa:
- *                       type: array
- *                       items:
- *                         type: string
- *       404:
- *         description: Mascota no encontrada
- *     security: [{ bearerAuth: [] }]
- */
-router.get('/:id/estado', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const mascota = await findPetByAnyId(id);
-    if (!mascota) throw new Error('Mascota no encontrada');
-    const resultado = await petService.verEstado(id);
-    res.json(resultado);
-  } catch (error) {
-    res.status(404).json({ error: error.message });
-  }
-});
-
-/**
- * @swagger
- * /mascotas/{id}/objetos:
- *   post:
- *     summary: Agregar un objeto a la mascota
- *     tags: [Personalización]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: ID de la mascota
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               objetoId:
- *                 type: integer
- *                 description: ID del objeto a agregar
- *     responses:
- *       200:
- *         description: Objeto agregado
- *       400:
- *         description: Error de validación
- *       404:
- *         description: Mascota u objeto no encontrado
- *     security: [{ bearerAuth: [] }]
- */
-router.post('/:id/objetos', async (req, res) => {
-  const { id } = req.params;
-  const { objetoId } = req.body;
-  if (!objetoId) return res.status(400).json({ error: 'Falta el objetoId' });
-  try {
-    const mascota = await findPetByAnyId(id);
-    if (!mascota) throw new Error('Mascota no encontrada');
-    const result = await petService.agregarObjetoAMascota(id, objetoId);
-    res.json(result);
-  } catch (error) {
-    res.status(404).json({ error: error.message });
-  }
-});
-
-/**
- * @swagger
- * /mascotas/{id}/objetos/{objetoId}:
- *   delete:
- *     summary: Quitar un objeto de la mascota
- *     tags: [Personalización]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: ID de la mascota
- *       - in: path
- *         name: objetoId
- *         schema:
- *           type: integer
- *         required: true
- *         description: ID del objeto a quitar
- *     responses:
- *       200:
- *         description: Objeto eliminado
- *       404:
- *         description: Mascota u objeto no encontrado
- *     security: [{ bearerAuth: [] }]
- */
-router.delete('/:id/objetos/:objetoId', async (req, res) => {
-  const { id, objetoId } = req.params;
-  try {
-    const mascota = await findPetByAnyId(id);
-    if (!mascota) throw new Error('Mascota no encontrada');
-    const result = await petService.quitarObjetoAMascota(id, objetoId);
-    res.json(result);
-  } catch (error) {
-    res.status(404).json({ error: error.message });
-  }
-});
-
-/**
- * @swagger
  * /mascotas/adoptar/{id}:
  *   post:
  *     summary: Adoptar una mascota disponible
@@ -727,17 +296,516 @@ router.post('/adoptar/:id', authenticate, async (req, res) => {
  */
 
 // Modificar endpoints relevantes para buscar por id secuencial o _id
-function findPetByAnyId(id) {
-  // Si es numérico, buscar por id secuencial
-  if (!isNaN(Number(id))) {
-    return Pet.findOne({ id: Number(id) });
+function findPetByAnyIdAndOwner(id, user) {
+  if (user && user.role === 'admin') {
+    // Admin puede buscar por id secuencial o _id
+    if (!isNaN(Number(id))) {
+      return Pet.findOne({ id: Number(id) });
+    }
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      return Pet.findById(id);
+    }
+    return null;
+  } else {
+    // Usuario normal: buscar por id y ownerId (convertido a ObjectId)
+    const ownerObjectId = new mongoose.Types.ObjectId(user.id);
+    if (!isNaN(Number(id))) {
+      return Pet.findOne({ id: Number(id), ownerId: ownerObjectId });
+    }
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      return Pet.findOne({ _id: id, ownerId: ownerObjectId });
+    }
+    return null;
   }
-  // Si es un ObjectId válido, buscar por _id
-  if (mongoose.Types.ObjectId.isValid(id)) {
-    return Pet.findById(id);
-  }
-  // Si no es válido, retornar null
-  return null;
 }
+
+// === NUEVOS ENDPOINTS DE CUIDADO ===
+
+/**
+ * @swagger
+ * /mascotas/{id}/alimentar:
+ *   post:
+ *     summary: Alimentar a una mascota
+ *     tags: [Cuidado]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID de la mascota
+ *     responses:
+ *       200:
+ *         description: Mensaje de resultado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 mensaje:
+ *                   type: string
+ *       404:
+ *         description: Mascota no encontrada
+ *     security: [{ bearerAuth: [] }]
+ */
+// Alimentar
+router.post('/:id/alimentar', authenticate, async (req, res) => {
+  const { id } = req.params;
+  console.log('--- [CUIDADO] ---');
+  console.log('ID recibido:', id);
+  console.log('Usuario autenticado:', req.user);
+  try {
+    const mascota = await findPetByAnyIdAndOwner(id, req.user);
+    console.log('Mascota encontrada:', mascota);
+    if (!mascota) throw new Error('Mascota no encontrada');
+    const resultado = await petService.alimentarMascota(mascota.id);
+    res.json(resultado);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+});
+
+/**
+ * @swagger
+ * /mascotas/{id}/banar:
+ *   post:
+ *     summary: Bañar a una mascota
+ *     tags: [Cuidado]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID de la mascota
+ *     responses:
+ *       200:
+ *         description: Mensaje de resultado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 mensaje:
+ *                   type: string
+ *       404:
+ *         description: Mascota no encontrada
+ *     security: [{ bearerAuth: [] }]
+ */
+// Bañar
+router.post('/:id/banar', authenticate, async (req, res) => {
+  const { id } = req.params;
+  console.log('--- [CUIDADO] ---');
+  console.log('ID recibido:', id);
+  console.log('Usuario autenticado:', req.user);
+  try {
+    const mascota = await findPetByAnyIdAndOwner(id, req.user);
+    console.log('Mascota encontrada:', mascota);
+    if (!mascota) throw new Error('Mascota no encontrada');
+    const resultado = await petService.banarMascota(mascota.id);
+    res.json(resultado);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+});
+
+/**
+ * @swagger
+ * /mascotas/{id}/jugar:
+ *   post:
+ *     summary: Jugar con una mascota
+ *     tags: [Cuidado]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID de la mascota
+ *     responses:
+ *       200:
+ *         description: Mensaje de resultado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 mensaje:
+ *                   type: string
+ *       404:
+ *         description: Mascota no encontrada
+ *     security: [{ bearerAuth: [] }]
+ */
+// Jugar
+router.post('/:id/jugar', authenticate, async (req, res) => {
+  const { id } = req.params;
+  console.log('--- [CUIDADO] ---');
+  console.log('ID recibido:', id);
+  console.log('Usuario autenticado:', req.user);
+  try {
+    const mascota = await findPetByAnyIdAndOwner(id, req.user);
+    console.log('Mascota encontrada:', mascota);
+    if (!mascota) throw new Error('Mascota no encontrada');
+    const resultado = await petService.jugarMascota(mascota.id);
+    res.json(resultado);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+});
+
+/**
+ * @swagger
+ * /mascotas/{id}/pasear:
+ *   post:
+ *     summary: Pasear con una mascota
+ *     tags: [Cuidado]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID de la mascota
+ *     responses:
+ *       200:
+ *         description: Mensaje de resultado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 mensaje:
+ *                   type: string
+ *       404:
+ *         description: Mascota no encontrada
+ *     security: [{ bearerAuth: [] }]
+ */
+// Pasear
+router.post('/:id/pasear', authenticate, async (req, res) => {
+  const { id } = req.params;
+  console.log('--- [CUIDADO] ---');
+  console.log('ID recibido:', id);
+  console.log('Usuario autenticado:', req.user);
+  try {
+    const mascota = await findPetByAnyIdAndOwner(id, req.user);
+    console.log('Mascota encontrada:', mascota);
+    if (!mascota) throw new Error('Mascota no encontrada');
+    const resultado = await petService.pasearMascota(mascota.id);
+    res.json(resultado);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+});
+
+/**
+ * @swagger
+ * /mascotas/{id}/curar:
+ *   post:
+ *     summary: Curar a una mascota enferma
+ *     tags: [Cuidado]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID de la mascota
+ *     responses:
+ *       200:
+ *         description: Mensaje de resultado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 mensaje:
+ *                   type: string
+ *       404:
+ *         description: Mascota no encontrada
+ *     security: [{ bearerAuth: [] }]
+ */
+// Curar
+router.post('/:id/curar', authenticate, async (req, res) => {
+  const { id } = req.params;
+  console.log('--- [CUIDADO] ---');
+  console.log('ID recibido:', id);
+  console.log('Usuario autenticado:', req.user);
+  try {
+    const mascota = await findPetByAnyIdAndOwner(id, req.user);
+    console.log('Mascota encontrada:', mascota);
+    if (!mascota) throw new Error('Mascota no encontrada');
+    const resultado = await petService.curarMascota(mascota.id);
+    res.json(resultado);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+});
+
+/**
+ * @swagger
+ * /mascotas/{id}/ropa:
+ *   get:
+ *     summary: Ver la ropa de una mascota
+ *     tags: [Personalización]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID de la mascota
+ *     responses:
+ *       200:
+ *         description: Ropa de la mascota
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 mensaje:
+ *                   type: string
+ *                 ropa:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *       404:
+ *         description: Mascota no encontrada
+ *     security: [{ bearerAuth: [] }]
+ */
+// Ver ropa
+router.get('/:id/ropa', authenticate, async (req, res) => {
+  const { id } = req.params;
+  console.log('--- [PERSONALIZACION] ---');
+  console.log('ID recibido:', id);
+  console.log('Usuario autenticado:', req.user);
+  try {
+    const mascota = await findPetByAnyIdAndOwner(id, req.user);
+    console.log('Mascota encontrada:', mascota);
+    if (!mascota) throw new Error('Mascota no encontrada');
+    const resultado = await petService.verRopa(mascota.id);
+    res.json(resultado);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+});
+
+/**
+ * @swagger
+ * /mascotas/{id}/ropa:
+ *   post:
+ *     summary: Cambiar la ropa de una mascota
+ *     tags: [Personalización]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID de la mascota
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               ropa:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: Lista de prendas de ropa
+ *     responses:
+ *       200:
+ *         description: Mensaje de resultado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 mensaje:
+ *                   type: string
+ *       404:
+ *         description: Mascota no encontrada
+ *     security: [{ bearerAuth: [] }]
+ */
+// Cambiar ropa
+router.post('/:id/ropa', authenticate, async (req, res) => {
+  const { id } = req.params;
+  const { ropa } = req.body;
+  if (!ropa || !Array.isArray(ropa)) {
+    return res.status(400).json({ error: 'Debes enviar un array de ropa' });
+  }
+  console.log('--- [PERSONALIZACION] ---');
+  console.log('ID recibido:', id);
+  console.log('Usuario autenticado:', req.user);
+  try {
+    const mascota = await findPetByAnyIdAndOwner(id, req.user);
+    console.log('Mascota encontrada:', mascota);
+    if (!mascota) throw new Error('Mascota no encontrada');
+    const resultado = await petService.cambiarRopa(mascota.id, ropa);
+    res.json(resultado);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+});
+
+/**
+ * @swagger
+ * /mascotas/{id}/estado:
+ *   get:
+ *     summary: Ver el estado completo de una mascota
+ *     tags: [Estado]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID de la mascota
+ *     responses:
+ *       200:
+ *         description: Estado de la mascota
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 nombre:
+ *                   type: string
+ *                 id:
+ *                   type: integer
+ *                 _id:
+ *                   type: string
+ *                 hambre:
+ *                   type: number
+ *                 felicidad:
+ *                   type: number
+ *                 limpieza:
+ *                   type: number
+ *                 enfermedad:
+ *                   type: string
+ *                 ropa:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *       404:
+ *         description: Mascota no encontrada
+ *     security: [{ bearerAuth: [] }]
+ */
+// Ver estado
+router.get('/:id/estado', authenticate, async (req, res) => {
+  const { id } = req.params;
+  console.log('--- [ESTADO] ---');
+  console.log('ID recibido:', id);
+  console.log('Usuario autenticado:', req.user);
+  try {
+    const mascota = await findPetByAnyIdAndOwner(id, req.user);
+    console.log('Mascota encontrada:', mascota);
+    if (!mascota) throw new Error('Mascota no encontrada');
+    const resultado = await petService.verEstado(mascota.id);
+    res.json({
+      nombre: mascota.nombre,
+      id: mascota.id,
+      _id: mascota._id,
+      ...resultado
+    });
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+});
+
+/**
+ * @swagger
+ * /mascotas/{id}/objetos:
+ *   post:
+ *     summary: Agregar un objeto a la mascota
+ *     tags: [Personalización]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID de la mascota
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               objetoId:
+ *                 type: integer
+ *                 description: ID del objeto a agregar
+ *     responses:
+ *       200:
+ *         description: Objeto agregado
+ *       400:
+ *         description: Error de validación
+ *       404:
+ *         description: Mascota u objeto no encontrado
+ *     security: [{ bearerAuth: [] }]
+ */
+// Agregar objeto
+router.post('/:id/objetos', authenticate, async (req, res) => {
+  const { id } = req.params;
+  const { objetoId } = req.body;
+  if (!objetoId) return res.status(400).json({ error: 'Falta el objetoId' });
+  console.log('--- [PERSONALIZACION] ---');
+  console.log('ID recibido:', id);
+  console.log('Usuario autenticado:', req.user);
+  try {
+    const mascota = await findPetByAnyIdAndOwner(id, req.user);
+    console.log('Mascota encontrada:', mascota);
+    if (!mascota) throw new Error('Mascota no encontrada');
+    const result = await petService.agregarObjetoAMascota(mascota.id, objetoId);
+    res.json(result);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+});
+
+/**
+ * @swagger
+ * /mascotas/{id}/objetos/{objetoId}:
+ *   delete:
+ *     summary: Quitar un objeto de la mascota
+ *     tags: [Personalización]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID de la mascota
+ *       - in: path
+ *         name: objetoId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID del objeto a quitar
+ *     responses:
+ *       200:
+ *         description: Objeto eliminado
+ *       404:
+ *         description: Mascota u objeto no encontrado
+ *     security: [{ bearerAuth: [] }]
+ */
+// Quitar objeto
+router.delete('/:id/objetos/:objetoId', authenticate, async (req, res) => {
+  const { id, objetoId } = req.params;
+  console.log('--- [PERSONALIZACION] ---');
+  console.log('ID recibido:', id);
+  console.log('Usuario autenticado:', req.user);
+  try {
+    const mascota = await findPetByAnyIdAndOwner(id, req.user);
+    console.log('Mascota encontrada:', mascota);
+    if (!mascota) throw new Error('Mascota no encontrada');
+    const result = await petService.quitarObjetoAMascota(mascota.id, objetoId);
+    res.json(result);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+});
 
 export default router; 
