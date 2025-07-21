@@ -50,34 +50,6 @@ router.delete('/liberar', authenticate, async (req, res) => {
   res.json({ mensaje: 'Mascota liberada, ahora está disponible para adopción' });
 });
 
-/**
- * @swagger
- * /mis-mascotas/estado:
- *   get:
- *     summary: Ver el estado de tu mascota
- *     tags: [Estado]
- *     security: [{ bearerAuth: [] }]
- *     responses:
- *       200:
- *         description: Estado de la mascota
- *       404:
- *         description: No tienes mascota adoptada
- */
-router.get('/estado', authenticate, async (req, res) => {
-  const mascota = await Pet.findOne({ ownerId: req.user.id });
-  if (!mascota) {
-    return res.status(404).json({ error: 'No tienes mascota adoptada' });
-  }
-  // Puedes personalizar qué campos mostrar
-  const estado = {
-    hambre: mascota.hambre,
-    felicidad: mascota.felicidad,
-    limpieza: mascota.limpieza,
-    enfermedad: mascota.enfermedad
-  };
-  res.json(estado);
-});
-
 // Ver objetos disponibles
 router.get('/objetos', authenticate, async (req, res) => {
   const objetos = await Objeto.find();
