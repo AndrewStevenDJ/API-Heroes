@@ -591,9 +591,9 @@ router.get('/:id/ropa', authenticate, async (req, res) => {
 
 /**
  * @swagger
- * /mascotas/{id}/ropa:
+ * /mascotas/{id}/ropa/agregar:
  *   post:
- *     summary: Cambiar la ropa de una mascota
+ *     summary: Agregar una prenda/accesorio a la mascota
  *     tags: [Personalización]
  *     parameters:
  *       - in: path
@@ -609,43 +609,40 @@ router.get('/:id/ropa', authenticate, async (req, res) => {
  *           schema:
  *             type: object
  *             properties:
- *               ropa:
- *                 type: array
- *                 items:
- *                   type: string
- *                 description: Lista de prendas de ropa
+ *               ropaId:
+ *                 type: integer
+ *                 description: ID de la prenda/accesorio a agregar
+ *                 example: 1
  *     responses:
  *       200:
- *         description: Mensaje de resultado
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 mensaje:
- *                   type: string
+ *         description: Prenda/accesorio agregado
+ *       400:
+ *         description: Error de validación
  *       404:
- *         description: Mascota no encontrada
+ *         description: Mascota o prenda/accesorio no encontrado
  *     security: [{ bearerAuth: [] }]
  */
-// Cambiar ropa
-router.post('/:id/ropa', authenticate, async (req, res) => {
+router.post('/:id/ropa/agregar', authenticate, async (req, res) => {
   const { id } = req.params;
-  const { ropa } = req.body;
-  if (!ropa || !Array.isArray(ropa)) {
-    return res.status(400).json({ error: 'Debes enviar un array de ropa' });
-  }
-  console.log('--- [PERSONALIZACION] ---');
-  console.log('ID recibido:', id);
-  console.log('Usuario autenticado:', req.user);
+  const { ropaId } = req.body;
+  if (!ropaId) return res.status(400).json({ error: 'Falta el ropaId' });
   try {
     const mascota = await findPetByAnyIdAndOwner(id, req.user);
-    console.log('Mascota encontrada:', mascota);
-    if (!mascota) throw new Error('Mascota no encontrada');
-    const resultado = await petService.cambiarRopa(mascota.id, ropa);
-    res.json(resultado);
+    if (!mascota) return res.status(404).json({ error: 'Mascota no encontrada' });
+    // Obtener catálogo de ropa
+    const { getRopa } = await import('../utils/catalogoUtil.js');
+    const ropa = getRopa().find(r => r.id === ropaId);
+    if (!ropa) return res.status(404).json({ error: 'Prenda/accesorio no encontrado' });
+    // Evitar duplicados
+    if (mascota.ropa && mascota.ropa.some(r => r.id === ropaId)) {
+      return res.status(400).json({ error: 'La mascota ya tiene esta prenda/accesorio' });
+    }
+    if (!mascota.ropa) mascota.ropa = [];
+    mascota.ropa.push({ id: ropa.id, nombre: ropa.nombre, tipo: ropa.tipo, imagen: ropa.imagen, descripcion: ropa.descripcion });
+    await mascota.save();
+    res.json({ mensaje: 'Prenda/accesorio agregado a la mascota', ropa: mascota.ropa });
   } catch (error) {
-    res.status(404).json({ error: error.message });
+    res.status(500).json({ error: error.message });
   }
 });
 

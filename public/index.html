@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WhiBlu - Mi Mascota Virtual</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Pantalla de bienvenida -->
+  <div id="welcome-view">
+    <div id="logo-conejo">
+      <!-- SVG cabeza de conejo -->
+      <svg width="110" height="110" viewBox="0 0 110 110">
+        <ellipse cx="55" cy="70" rx="38" ry="32" fill="#fff" stroke="#bbb" stroke-width="3"/>
+        <ellipse cx="35" cy="30" rx="13" ry="28" fill="#fff" stroke="#bbb" stroke-width="3"/>
+        <ellipse cx="75" cy="30" rx="13" ry="28" fill="#fff" stroke="#bbb" stroke-width="3"/>
+        <ellipse cx="35" cy="30" rx="6" ry="18" fill="#f9c2d1"/>
+        <ellipse cx="75" cy="30" rx="6" ry="18" fill="#f9c2d1"/>
+        <ellipse cx="55" cy="80" rx="18" ry="10" fill="#f9c2d1"/>
+        <ellipse cx="45" cy="70" rx="4" ry="6" fill="#222"/>
+        <ellipse cx="65" cy="70" rx="4" ry="6" fill="#222"/>
+        <ellipse cx="55" cy="90" rx="5" ry="2" fill="#222"/>
+      </svg>
+    </div>
+    <h1>Bienvenido a <span class="whiblu">WhiBlu</span></h1>
+    <div id="welcome-buttons">
+      <button id="btn-register">Registrarse</button>
+      <button id="btn-login">Iniciar sesión</button>
+    </div>
+  </div>
+
+  <!-- Vista de registro -->
+  <div id="register-view" class="hidden">
+    <h2>Crear cuenta</h2>
+    <form id="register-form">
+      <label for="register-username">Usuario</label>
+      <input type="text" id="register-username" required autocomplete="username">
+      <label for="register-password">Contraseña</label>
+      <input type="password" id="register-password" required autocomplete="new-password">
+      <button type="submit">Registrarse</button>
+      <div id="register-message" class="form-message"></div>
+    </form>
+    <p>
+      ¿Ya tienes cuenta? <a href="#" id="go-login">Inicia sesión</a><br>
+      <a href="#" id="back-to-welcome1">Volver a la bienvenida</a>
+    </p>
+  </div>
+
+  <!-- Vista de inicio de sesión -->
+  <div id="login-view" class="hidden">
+    <h2>Iniciar sesión</h2>
+    <form id="login-form">
+      <label for="login-username">Usuario</label>
+      <input type="text" id="login-username" required autocomplete="username">
+      <label for="login-password">Contraseña</label>
+      <input type="password" id="login-password" required autocomplete="current-password">
+      <button type="submit">Iniciar sesión</button>
+      <div id="login-message" class="form-message"></div>
+    </form>
+    <p>
+      ¿No tienes cuenta? <a href="#" id="go-register">Regístrate</a><br>
+      <a href="#" id="back-to-welcome2">Volver a la bienvenida</a>
+    </p>
+  </div>
+
+  <!-- Pantalla de selección de mascota (carrusel) -->
+  <div id="select-pet-view" class="hidden">
+    <h2 id="pet-name" class="pet-name-top"></h2>
+    <h3>¡Elige tu mascota!</h3>
+    <div id="pet-carousel">
+      <button id="prev-pet" class="carousel-btn">&#8592;</button>
+      <div id="pet-svg-container">
+        <!-- SVG de la mascota actual -->
+      </div>
+      <button id="next-pet" class="carousel-btn">&#8594;</button>
+    </div>
+    <div id="pet-info">
+      <p id="pet-desc"></p>
+    </div>
+    <button id="select-pet-btn">Seleccionar</button>
+  </div>
+
+  <!-- Pantalla principal del juego -->
+  <div id="background" class="room-home hidden">
+    <div id="clouds-overlay" class="hidden"></div>
+    <div id="pet-container">
+      <img id="pet-img" src="" alt="Mascota" />
+    </div>
+    <div id="status-bars">
+      <div class="status-bar">
+        <span class="icon">❤️</span>
+        <div class="bar-bg"><div class="bar-fill" id="bar-salud"></div></div>
+        <span id="val-salud">100</span>
+      </div>
+      <div class="status-bar">
+        <span class="icon">🍔</span>
+        <div class="bar-bg"><div class="bar-fill" id="bar-comida"></div></div>
+        <span id="val-comida">100</span>
+      </div>
+      <div class="status-bar">
+        <span class="icon">⚡</span>
+        <div class="bar-bg"><div class="bar-fill" id="bar-energia"></div></div>
+        <span id="val-energia">100</span>
+      </div>
+      <div class="status-bar">
+        <span class="icon">😊</span>
+        <div class="bar-bg"><div class="bar-fill" id="bar-felicidad"></div></div>
+        <span id="val-felicidad">100</span>
+      </div>
+    </div>
+    <div id="actions">
+      <button onclick="doAction('alimentar')">Alimentar</button>
+      <button onclick="doAction('banar')">Bañar</button>
+      <button onclick="doAction('jugar')">Jugar</button>
+      <button onclick="doAction('dormir')">Dormir</button>
+    </div>
+  </div>
+  <script src="main.js"></script>
+</body>
+</html> 

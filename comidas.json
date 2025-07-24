@@ -1,0 +1,18 @@
+[
+  { "id": 1, "nombre": "Pizza", "efectos": { "hambre": -30, "salud": -5, "felicidad": 10 }, "tipo": "comida", "descripcion": "Deliciosa pero no muy saludable." },
+  { "id": 2, "nombre": "Ensalada", "efectos": { "hambre": -10, "salud": 10, "felicidad": 2 }, "tipo": "comida", "descripcion": "Ligera y saludable." },
+  { "id": 3, "nombre": "Hamburguesa", "efectos": { "hambre": -25, "salud": -2, "felicidad": 8 }, "tipo": "comida", "descripcion": "Rica pero algo grasosa." },
+
+  { "id": 4, "nombre": "Manzana", "efectos": { "hambre": -5, "salud": 8, "felicidad": 3 }, "tipo": "fruta", "descripcion": "Fruta fresca y saludable." },
+  { "id": 5, "nombre": "Banana", "efectos": { "hambre": -7, "salud": 7, "felicidad": 4 }, "tipo": "fruta", "descripcion": "Llena de energía." },
+  { "id": 6, "nombre": "Zanahoria", "efectos": { "hambre": -6, "salud": 9, "felicidad": 2 }, "tipo": "verdura", "descripcion": "Buena para la vista." },
+  { "id": 7, "nombre": "Lechuga", "efectos": { "hambre": -4, "salud": 6, "felicidad": 1 }, "tipo": "verdura", "descripcion": "Muy ligera y fresca." },
+
+  { "id": 8, "nombre": "Agua", "efectos": { "sed": -20, "salud": 5 }, "tipo": "bebida", "descripcion": "Vital para la vida." },
+  { "id": 9, "nombre": "Leche", "efectos": { "sed": -10, "salud": 8 }, "tipo": "bebida", "descripcion": "Buena para los huesos." },
+  { "id": 10, "nombre": "Jugo de naranja", "efectos": { "sed": -12, "salud": 7, "felicidad": 2 }, "tipo": "bebida", "descripcion": "Refrescante y lleno de vitaminas." },
+
+  { "id": 11, "nombre": "Croquetas para perro", "efectos": { "hambre": -15, "salud": 10 }, "tipo": "croqueta", "especie": "perro", "descripcion": "Alimento balanceado para perros." },
+  { "id": 12, "nombre": "Croquetas para gato", "efectos": { "hambre": -15, "salud": 10 }, "tipo": "croqueta", "especie": "gato", "descripcion": "Alimento balanceado para gatos." },
+  { "id": 13, "nombre": "Croquetas para conejo", "efectos": { "hambre": -12, "salud": 9 }, "tipo": "croqueta", "especie": "conejo", "descripcion": "Alimento especial para conejos." }
+] 

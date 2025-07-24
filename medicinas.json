@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "nombre": "Antigripal",
+    "cura": "gripe",
+    "efectos": { "salud": 20 },
+    "descripcion": "Cura la gripe y mejora la salud."
+  },
+  {
+    "id": 2,
+    "nombre": "Antiparasitario",
+    "cura": "parasitos",
+    "efectos": { "salud": 15 },
+    "descripcion": "Elimina parásitos internos."
+  },
+  {
+    "id": 3,
+    "nombre": "Pomada",
+    "cura": "herida",
+    "efectos": { "salud": 10 },
+    "descripcion": "Ayuda a sanar heridas leves."
+  }
+] 

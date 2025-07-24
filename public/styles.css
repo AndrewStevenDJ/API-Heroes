@@ -1,0 +1,360 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Quicksand', Arial, sans-serif;
+  background: #e0e7ff;
+  min-height: 100vh;
+}
+
+#background {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(180deg, #aee1f9 0%, #f9f9f9 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  overflow: hidden;
+  transition: background 1s;
+}
+
+.room-home {
+  background: linear-gradient(180deg, #aee1f9 0%, #f9f9f9 100%);
+}
+.room-bath {
+  background: linear-gradient(180deg, #b2f0e6 0%, #e0f7fa 100%);
+}
+.room-kitchen {
+  background: linear-gradient(180deg, #fffde4 0%, #f9e7b2 100%);
+}
+.room-park {
+  background: linear-gradient(180deg, #b2f9b2 0%, #e0ffe0 100%);
+}
+
+#clouds-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 10;
+  background: url('clouds.png') repeat-x center/cover, rgba(255,255,255,0.7);
+  opacity: 0;
+  transition: opacity 1s;
+}
+#clouds-overlay.active {
+  opacity: 1;
+}
+
+#pet-container {
+  position: absolute;
+  left: 50%;
+  bottom: 180px;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#pet-img {
+  width: 180px;
+  height: 180px;
+  object-fit: contain;
+  animation: pet-idle 2.5s infinite alternate;
+}
+@keyframes pet-idle {
+  0% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-8px) scale(1.03); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+#status-bars {
+  position: absolute;
+  left: 50%;
+  bottom: 120px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  z-index: 3;
+}
+.status-bar {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px #0001;
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  min-width: 90px;
+  gap: 6px;
+}
+.status-bar .icon {
+  font-size: 1.2em;
+}
+.bar-bg {
+  background: #e0e0e0;
+  border-radius: 8px;
+  width: 60px;
+  height: 10px;
+  overflow: hidden;
+  margin: 0 4px;
+}
+.bar-fill {
+  background: linear-gradient(90deg, #6ee7b7, #3b82f6);
+  height: 100%;
+  width: 100%;
+  border-radius: 8px;
+  transition: width 0.5s;
+}
+
+#actions {
+  position: absolute;
+  left: 50%;
+  bottom: 40px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 18px;
+  z-index: 3;
+}
+#actions button {
+  background: #fff;
+  color: #3b82f6;
+  border: none;
+  border-radius: 20px;
+  padding: 14px 28px;
+  font-size: 1.1em;
+  font-weight: bold;
+  box-shadow: 0 2px 8px #0001;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, transform 0.1s;
+}
+#actions button:hover {
+  background: #3b82f6;
+  color: #fff;
+  transform: scale(1.07);
+}
+
+/********* Carrusel de selección de mascota *********/
+#select-pet-view {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(180deg, #f9e7b2 0%, #aee1f9 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  transition: opacity 0.7s;
+}
+#pet-carousel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 24px 0 10px 0;
+  gap: 18px;
+}
+#pet-svg-container {
+  width: 180px;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 12px #0002;
+  margin: 0 10px;
+}
+.carousel-btn {
+  background: #fff;
+  color: #3b82f6;
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  font-size: 2em;
+  font-weight: bold;
+  box-shadow: 0 2px 8px #0001;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, transform 0.1s;
+}
+.carousel-btn:hover {
+  background: #3b82f6;
+  color: #fff;
+  transform: scale(1.1);
+}
+#pet-info {
+  text-align: center;
+  margin-bottom: 18px;
+}
+#select-pet-btn {
+  background: #6ee7b7;
+  color: #222;
+  border: none;
+  border-radius: 20px;
+  padding: 14px 38px;
+  font-size: 1.2em;
+  font-weight: bold;
+  box-shadow: 0 2px 8px #0001;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background 0.2s, color 0.2s, transform 0.1s;
+}
+#select-pet-btn:hover {
+  background: #3b82f6;
+  color: #fff;
+  transform: scale(1.07);
+}
+
+/********* Ocultar/mostrar pantallas *********/
+.hidden { display: none !important; }
+
+#welcome-view {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(180deg, #aee1f9 0%, #f9e7b2 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 30;
+  transition: opacity 0.7s;
+}
+#logo-conejo {
+  margin-bottom: 18px;
+  filter: drop-shadow(0 4px 16px #0002);
+}
+.whiblu {
+  color: #3b82f6;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+#welcome-view h1 {
+  font-size: 2.2em;
+  margin-bottom: 18px;
+  text-align: center;
+}
+#welcome-buttons {
+  display: flex;
+  gap: 24px;
+  margin-top: 10px;
+}
+#welcome-buttons button {
+  background: #fff;
+  color: #3b82f6;
+  border: none;
+  border-radius: 20px;
+  padding: 16px 36px;
+  font-size: 1.2em;
+  font-weight: bold;
+  box-shadow: 0 2px 8px #0001;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, transform 0.1s;
+}
+#welcome-buttons button:hover {
+  background: #3b82f6;
+  color: #fff;
+  transform: scale(1.07);
+}
+
+/* Vistas de registro y login */
+#register-view, #login-view {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(180deg, #f9e7b2 0%, #aee1f9 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 25;
+  transition: opacity 0.7s;
+}
+#register-view h2, #login-view h2 {
+  font-size: 2em;
+  margin-bottom: 18px;
+  color: #3b82f6;
+  text-align: center;
+}
+#register-form, #login-form {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 16px #0002;
+  padding: 32px 28px 18px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 270px;
+  align-items: stretch;
+}
+#register-form label, #login-form label {
+  font-weight: bold;
+  color: #3b82f6;
+  margin-bottom: 2px;
+}
+#register-form input, #login-form input {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #bcd;
+  font-size: 1em;
+  margin-bottom: 8px;
+  outline: none;
+  transition: border 0.2s;
+}
+#register-form input:focus, #login-form input:focus {
+  border: 1.5px solid #3b82f6;
+}
+#register-form button, #login-form button {
+  background: #3b82f6;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 12px 0;
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-top: 8px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, transform 0.1s;
+}
+#register-form button:hover, #login-form button:hover {
+  background: #6ee7b7;
+  color: #222;
+  transform: scale(1.04);
+}
+.form-message {
+  min-height: 22px;
+  font-size: 1em;
+  margin-top: 4px;
+  text-align: center;
+}
+#register-view p, #login-view p {
+  margin-top: 18px;
+  text-align: center;
+  color: #555;
+  font-size: 1em;
+}
+#register-view a, #login-view a {
+  color: #3b82f6;
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: bold;
+  transition: color 0.2s;
+}
+#register-view a:hover, #login-view a:hover {
+  color: #6ee7b7;
+}
+
+@media (max-width: 600px) {
+  #pet-img { width: 120px; height: 120px; }
+  #status-bars { bottom: 90px; }
+  #actions { bottom: 20px; }
+  .status-bar { min-width: 60px; font-size: 0.9em; }
+  #register-form, #login-form {
+    min-width: 90vw;
+    padding: 18px 6vw 12px 6vw;
+  }
+} 

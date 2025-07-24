@@ -1,4 +1,5 @@
 import express from 'express'
+import cors from 'cors'
 import heroController from './controllers/heroController.js'
 import petController from './controllers/petController.js'
 import objetoController from './controllers/objetoController.js'
@@ -8,8 +9,13 @@ import './estadoUpdater.js';
 import { connectDB } from './db.js';
 import userController from './controllers/userController.js';
 import userPetController from './controllers/userPetController.js';
+import inventarioController from './controllers/inventarioController.js';
+import comidaController from './controllers/comidaController.js';
+import medicinaController from './controllers/medicinaController.js';
+import ropaController from './controllers/ropaController.js';
 
 const app = express()
+app.use(cors());
 const PORT = 3000
 
 app.use(express.json())
@@ -23,6 +29,34 @@ app.use('/objetos', objetoController)
 // Usar el controlador para la ruta /auth
 app.use('/auth', userController);
 app.use('/mis-mascotas', userPetController);
+
+// Rutas de inventario
+app.get('/inventario/:usuarioId', inventarioController.obtenerInventario);
+app.post('/inventario/:usuarioId/usar-comida', inventarioController.usarComida);
+app.post('/inventario/:usuarioId/usar-medicina', inventarioController.usarMedicina);
+app.post('/inventario/:usuarioId/equipar-ropa', inventarioController.equiparRopa);
+app.post('/inventario/:usuarioId/desequipar-ropa', inventarioController.desequiparRopa);
+
+// Rutas CRUD de comidas
+app.get('/comidas', comidaController.listarComidas);
+app.get('/comidas/:id', comidaController.obtenerComida);
+app.post('/comidas', comidaController.agregarComida);
+app.put('/comidas/:id', comidaController.editarComida);
+app.delete('/comidas/:id', comidaController.eliminarComida);
+
+// Rutas CRUD de medicinas
+app.get('/medicinas', medicinaController.listarMedicinas);
+app.get('/medicinas/:id', medicinaController.obtenerMedicina);
+app.post('/medicinas', medicinaController.agregarMedicina);
+app.put('/medicinas/:id', medicinaController.editarMedicina);
+app.delete('/medicinas/:id', medicinaController.eliminarMedicina);
+
+// Rutas CRUD de ropa
+app.get('/ropa', ropaController.listarRopa);
+app.get('/ropa/:id', ropaController.obtenerRopa);
+app.post('/ropa', ropaController.agregarRopa);
+app.put('/ropa/:id', ropaController.editarRopa);
+app.delete('/ropa/:id', ropaController.eliminarRopa);
 
 // Endpoint raíz opcional
 app.get('/', (req, res) => {

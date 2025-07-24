@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "nombre": "Sombrero de mago",
+    "tipo": "cabeza",
+    "imagen": "ropa/sombrero_mago.png",
+    "descripcion": "Un sombrero mágico para mascotas especiales."
+  },
+  {
+    "id": 2,
+    "nombre": "Capa roja",
+    "tipo": "espalda",
+    "imagen": "ropa/capa_roja.png",
+    "descripcion": "Una capa elegante y llamativa."
+  },
+  {
+    "id": 3,
+    "nombre": "Collar brillante",
+    "tipo": "cuello",
+    "imagen": "ropa/collar_brilante.png",
+    "descripcion": "Un collar que resalta la personalidad de tu mascota."
+  },
+  {
+    "id": 4,
+    "nombre": "Sombrero",
+    "tipo": "cabeza",
+    "imagen": "ropa/sombrero_rojo.png",
+    "descripcion": "Un bonito sombrero rojo"
+  },
+  {
+    "id": 5,
+    "nombre": "Collar",
+    "tipo": "cuello",
+    "imagen": "ropa/collar_campana.png",
+    "descripcion": "Un collar brillante con campana"
+  }
+]
