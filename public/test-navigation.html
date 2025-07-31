@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🧪 Test de Navegación - WhiBlu</title>
+  <link rel="stylesheet" href="styles-modern.css">
+</head>
+<body>
+  <!-- Pantalla de bienvenida -->
+  <div id="welcome-view">
+    <h1>🐾 WhiBlu - Test</h1>
+    <p>Prueba de navegación entre formularios</p>
+    <div id="welcome-buttons">
+      <button class="btn btn-primary" id="btn-register">
+        ✨ Crear Cuenta
+      </button>
+      <button class="btn btn-secondary" id="btn-login">
+        🔑 Iniciar Sesión
+      </button>
+    </div>
+  </div>
+
+  <!-- Vista de registro -->
+  <div id="register-view" class="hidden">
+    <div class="form-container">
+      <h2>✨ Crear Cuenta</h2>
+      <form id="register-form">
+        <div class="form-group">
+          <label for="register-username">Nombre de Usuario</label>
+          <input type="text" id="register-username" placeholder="Elige tu nombre de usuario" required>
+        </div>
+        <div class="form-group">
+          <label for="register-password">Contraseña</label>
+          <input type="password" id="register-password" placeholder="Crea una contraseña segura" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">
+          🚀 Registrarse
+        </button>
+        <div id="register-message" class="form-message"></div>
+      </form>
+      <div class="form-links">
+        ¿Ya tienes cuenta? 
+        <a href="#" id="go-login">Inicia sesión</a>
+        <br><br>
+        <a href="#" id="back-to-welcome1">← Volver</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vista de inicio de sesión -->
+  <div id="login-view" class="hidden">
+    <div class="form-container">
+      <h2>🔑 Iniciar Sesión</h2>
+      <form id="login-form">
+        <div class="form-group">
+          <label for="login-username">Usuario</label>
+          <input type="text" id="login-username" placeholder="Tu nombre de usuario" required>
+        </div>
+        <div class="form-group">
+          <label for="login-password">Contraseña</label>
+          <input type="password" id="login-password" placeholder="Tu contraseña" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">
+          🎮 Entrar al Juego
+        </button>
+        <div id="login-message" class="form-message"></div>
+      </form>
+      <div class="form-links">
+        ¿No tienes cuenta? 
+        <a href="#" id="go-register">Regístrate</a>
+        <br><br>
+        <a href="#" id="back-to-welcome2">← Volver</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard simulado -->
+  <div id="background" class="hidden">
+    <div style="text-align: center; padding: 3rem; color: #e2e8f0;">
+      <h1>🎮 Dashboard</h1>
+      <p>¡Navegación exitosa!</p>
+      <button class="btn btn-secondary" onclick="showWelcome()">← Volver a inicio</button>
+    </div>
+  </div>
+
+  <script>
+    console.log('🧪 Test de navegación cargando...');
+
+    // Funciones básicas de navegación
+    function hideAllViews() {
+      console.log('🔄 Ocultando todas las vistas');
+      document.getElementById('welcome-view').classList.add('hidden');
+      document.getElementById('register-view').classList.add('hidden');
+      document.getElementById('login-view').classList.add('hidden');
+      document.getElementById('background').classList.add('hidden');
+    }
+
+    function showWelcome() {
+      console.log('🏠 Mostrando vista de bienvenida');
+      hideAllViews();
+      document.getElementById('welcome-view').classList.remove('hidden');
+    }
+
+    function showRegister() {
+      console.log('📝 Mostrando formulario de registro');
+      hideAllViews();
+      document.getElementById('register-view').classList.remove('hidden');
+    }
+
+    function showLogin() {
+      console.log('🔑 Mostrando formulario de login');
+      hideAllViews();
+      document.getElementById('login-view').classList.remove('hidden');
+    }
+
+    function showDashboard() {
+      console.log('📊 Mostrando dashboard');
+      hideAllViews();
+      document.getElementById('background').classList.remove('hidden');
+    }
+
+    // Event listeners con delegación
+    document.addEventListener('click', function(e) {
+      const target = e.target;
+      
+      if (target.id === 'btn-register') {
+        e.preventDefault();
+        console.log('🔄 Clic en btn-register');
+        showRegister();
+      }
+      
+      if (target.id === 'btn-login') {
+        e.preventDefault();
+        console.log('🔄 Clic en btn-login');
+        showLogin();
+      }
+      
+      if (target.id === 'go-login') {
+        e.preventDefault();
+        console.log('🔄 Clic en go-login');
+        showLogin();
+      }
+      
+      if (target.id === 'go-register') {
+        e.preventDefault();
+        console.log('🔄 Clic en go-register');
+        showRegister();
+      }
+      
+      if (target.id === 'back-to-welcome1' || target.id === 'back-to-welcome2') {
+        e.preventDefault();
+        console.log('🔄 Clic en volver a bienvenida');
+        showWelcome();
+      }
+    });
+
+    // Manejar formularios
+    document.addEventListener('submit', function(e) {
+      if (e.target.id === 'register-form') {
+        e.preventDefault();
+        console.log('📝 Test: Formulario de registro enviado');
+        document.getElementById('register-message').innerHTML = '<div style="color: #10b981;">✅ Test: Registro simulado exitoso</div>';
+        setTimeout(() => showDashboard(), 1500);
+      }
+      
+      if (e.target.id === 'login-form') {
+        e.preventDefault();
+        console.log('🔑 Test: Formulario de login enviado');
+        document.getElementById('login-message').innerHTML = '<div style="color: #10b981;">✅ Test: Login simulado exitoso</div>';
+        setTimeout(() => showDashboard(), 1500);
+      }
+    });
+
+    // Exponer funciones globalmente
+    window.showWelcome = showWelcome;
+    window.showRegister = showRegister;
+    window.showLogin = showLogin;
+    window.showDashboard = showDashboard;
+
+    console.log('✅ Test de navegación listo');
+    console.log('🧪 Puedes probar: showRegister(), showLogin(), showWelcome()');
+  </script>
+</body>
+</html>

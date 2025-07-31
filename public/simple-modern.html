@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🐾 WhiBlu - Dashboard de Mascotas</title>
+  <style>
+    /* CSS inline para evitar problemas de carga */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+      color: #e2e8f0;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* ========== PANTALLA DE BIENVENIDA ========== */
+    #welcome-view {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    #logo-conejo {
+      margin: 2rem 0;
+      filter: drop-shadow(0 10px 30px rgba(236, 72, 153, 0.3));
+    }
+
+    h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ec4899, #f472b6, #fbbf24);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: 1rem 0;
+    }
+
+    p {
+      font-size: 1.2rem;
+      color: #94a3b8;
+      margin-bottom: 2rem;
+      font-weight: 300;
+    }
+
+    /* ========== BOTONES ========== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.875rem 2rem;
+      margin: 0.5rem;
+      font-size: 1rem;
+      font-weight: 500;
+      text-decoration: none;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      min-width: 160px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #ec4899, #f472b6);
+      color: white;
+      box-shadow: 0 4px 20px rgba(236, 72, 153, 0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(236, 72, 153, 0.6);
+      background: linear-gradient(135deg, #f472b6, #ec4899);
+    }
+
+    .btn-secondary {
+      background: rgba(71, 85, 105, 0.8);
+      color: #e2e8f0;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(71, 85, 105, 1);
+      border-color: rgba(236, 72, 153, 0.5);
+      color: #f472b6;
+      transform: translateY(-2px);
+    }
+
+    /* ========== FORMULARIOS ========== */
+    #login-view, #register-view {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      width: 100%;
+      max-width: 450px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .form-container {
+      background: rgba(30, 41, 59, 0.8);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(148, 163, 184, 0.1);
+      border-radius: 20px;
+      padding: 2.5rem;
+      width: 100%;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .form-container h2 {
+      font-size: 2rem;
+      font-weight: 600;
+      color: #f472b6;
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: #cbd5e1;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      font-size: 1rem;
+      background: rgba(51, 65, 85, 0.8);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 10px;
+      color: #e2e8f0;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #f472b6;
+      box-shadow: 0 0 0 3px rgba(244, 114, 182, 0.1);
+      background: rgba(51, 65, 85, 1);
+    }
+
+    .form-group input::placeholder {
+      color: #94a3b8;
+    }
+
+    /* ========== DASHBOARD ========== */
+    #background {
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .dashboard-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .dashboard-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .dashboard-title {
+      font-size: 3rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ec4899, #f472b6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+
+    .dashboard-subtitle {
+      font-size: 1.2rem;
+      color: #94a3b8;
+      font-weight: 300;
+    }
+
+    .pets-section {
+      background: rgba(30, 41, 59, 0.6);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(148, 163, 184, 0.1);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .section-title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: #e2e8f0;
+    }
+
+    .form-message {
+      margin-top: 1rem;
+      padding: 0.75rem;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .form-message.success {
+      background: rgba(16, 185, 129, 0.1);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .form-message.error {
+      background: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    .link {
+      color: #f472b6;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <!-- Pantalla de bienvenida -->
+  <div id="welcome-view">
+    <div id="logo-conejo">
+      <svg width="120" height="120" viewBox="0 0 120 120">
+        <defs>
+          <linearGradient id="bunnyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#ec4899;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#f472b6;stop-opacity:1" />
+          </linearGradient>
+        </defs>
+        <ellipse cx="60" cy="75" rx="40" ry="35" fill="url(#bunnyGradient)" stroke="none"/>
+        <ellipse cx="38" cy="32" rx="14" ry="30" fill="url(#bunnyGradient)" stroke="none"/>
+        <ellipse cx="82" cy="32" rx="14" ry="30" fill="url(#bunnyGradient)" stroke="none"/>
+        <ellipse cx="38" cy="32" rx="7" ry="20" fill="#fbbf24"/>
+        <ellipse cx="82" cy="32" rx="7" ry="20" fill="#fbbf24"/>
+        <ellipse cx="60" cy="85" rx="20" ry="12" fill="#fbbf24"/>
+        <ellipse cx="48" cy="72" rx="5" ry="7" fill="#1e293b"/>
+        <ellipse cx="72" cy="72" rx="5" ry="7" fill="#1e293b"/>
+        <ellipse cx="60" cy="95" rx="6" ry="3" fill="#1e293b"/>
+      </svg>
+    </div>
+    <h1>🐾 WhiBlu</h1>
+    <p>Cuida de tus mascotas virtuales en este mundo mágico</p>
+    <div id="welcome-buttons">
+      <button class="btn btn-primary" onclick="showRegister()">
+        ✨ Crear Cuenta
+      </button>
+      <button class="btn btn-secondary" onclick="showLogin()">
+        🔑 Iniciar Sesión
+      </button>
+    </div>
+  </div>
+
+  <!-- Vista de registro -->
+  <div id="register-view" class="hidden">
+    <div class="form-container">
+      <h2>✨ Crear Cuenta</h2>
+      <form id="register-form" onsubmit="handleRegister(event)">
+        <div class="form-group">
+          <label for="register-username">Nombre de Usuario</label>
+          <input type="text" id="register-username" placeholder="Elige tu nombre de usuario" required>
+        </div>
+        <div class="form-group">
+          <label for="register-password">Contraseña</label>
+          <input type="password" id="register-password" placeholder="Crea una contraseña segura" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">
+          🚀 Registrarse
+        </button>
+        <div id="register-message" class="form-message"></div>
+      </form>
+      <div style="text-align: center; margin-top: 1.5rem; color: #94a3b8;">
+        ¿Ya tienes cuenta? 
+        <span class="link" onclick="showLogin()">Inicia sesión</span>
+        <br><br>
+        <span class="link" onclick="showWelcome()">← Volver</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vista de inicio de sesión -->
+  <div id="login-view" class="hidden">
+    <div class="form-container">
+      <h2>🔑 Iniciar Sesión</h2>
+      <form id="login-form" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label for="login-username">Usuario</label>
+          <input type="text" id="login-username" placeholder="Tu nombre de usuario" required>
+        </div>
+        <div class="form-group">
+          <label for="login-password">Contraseña</label>
+          <input type="password" id="login-password" placeholder="Tu contraseña" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">
+          🎮 Entrar al Juego
+        </button>
+        <div id="login-message" class="form-message"></div>
+      </form>
+      <div style="text-align: center; margin-top: 1.5rem; color: #94a3b8;">
+        ¿No tienes cuenta? 
+        <span class="link" onclick="showRegister()">Regístrate</span>
+        <br><br>
+        <span class="link" onclick="showWelcome()">← Volver</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard principal -->
+  <div id="background" class="hidden">
+    <div class="dashboard-container">
+      <div class="dashboard-header">
+        <h1 class="dashboard-title">🐾 Dashboard de Mascotas</h1>
+        <p class="dashboard-subtitle" id="welcome-message">
+          ¡Bienvenido! Cuida de tus mascotas virtuales
+        </p>
+      </div>
+
+      <div class="pets-section">
+        <div class="section-header">
+          <h2 class="section-title">Panel de Control</h2>
+          <button class="btn btn-secondary" onclick="handleLogout()">
+            🚪 Cerrar Sesión
+          </button>
+        </div>
+        
+        <div style="text-align: center; padding: 3rem; color: #94a3b8;">
+          <h3>🚧 Dashboard en Construcción</h3>
+          <p>La interfaz completa se está cargando...</p>
+          <br>
+          <button class="btn btn-primary" onclick="window.location.href='/index.html'">
+            📱 Ir a Versión Original
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Variables globales
+    const API_BASE = 'http://localhost:3000';
+    
+    console.log('🎮 WhiBlu Dashboard Moderno cargando...');
+
+    // Navegación entre vistas
+    function showWelcome() {
+      hideAllViews();
+      document.getElementById('welcome-view').classList.remove('hidden');
+    }
+
+    function showRegister() {
+      hideAllViews();
+      document.getElementById('register-view').classList.remove('hidden');
+    }
+
+    function showLogin() {
+      hideAllViews();
+      document.getElementById('login-view').classList.remove('hidden');
+    }
+
+    function showDashboard() {
+      hideAllViews();
+      document.getElementById('background').classList.remove('hidden');
+    }
+
+    function hideAllViews() {
+      document.getElementById('welcome-view').classList.add('hidden');
+      document.getElementById('register-view').classList.add('hidden');
+      document.getElementById('login-view').classList.add('hidden');
+      document.getElementById('background').classList.add('hidden');
+    }
+
+    // Autenticación
+    async function handleRegister(e) {
+      e.preventDefault();
+      const username = document.getElementById('register-username').value;
+      const password = document.getElementById('register-password').value;
+      const messageEl = document.getElementById('register-message');
+      
+      try {
+        const response = await fetch(`${API_BASE}/auth/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          messageEl.className = 'form-message success';
+          messageEl.innerHTML = '✅ Cuenta creada exitosamente';
+          setTimeout(() => {
+            showLogin();
+            document.getElementById('login-username').value = username;
+          }, 1500);
+        } else {
+          messageEl.className = 'form-message error';
+          messageEl.innerHTML = `❌ ${data.error}`;
+        }
+      } catch (error) {
+        messageEl.className = 'form-message error';
+        messageEl.innerHTML = '❌ Error de conexión';
+        console.error('Error en registro:', error);
+      }
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const username = document.getElementById('login-username').value;
+      const password = document.getElementById('login-password').value;
+      const messageEl = document.getElementById('login-message');
+      
+      try {
+        const response = await fetch(`${API_BASE}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          localStorage.setItem('token', data.token);
+          messageEl.className = 'form-message success';
+          messageEl.innerHTML = '✅ Iniciando sesión...';
+          setTimeout(() => {
+            showDashboard();
+            document.getElementById('welcome-message').textContent = `¡Bienvenido, ${username}! Cuida de tus mascotas virtuales`;
+          }, 1000);
+        } else {
+          messageEl.className = 'form-message error';
+          messageEl.innerHTML = `❌ ${data.error}`;
+        }
+      } catch (error) {
+        messageEl.className = 'form-message error';
+        messageEl.innerHTML = '❌ Error de conexión';
+        console.error('Error en login:', error);
+      }
+    }
+
+    function handleLogout() {
+      localStorage.removeItem('token');
+      showWelcome();
+    }
+
+    // Inicialización
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('✅ WhiBlu Dashboard Moderno cargado');
+      
+      // Verificar si hay token
+      const token = localStorage.getItem('token');
+      if (token) {
+        showDashboard();
+      } else {
+        showWelcome();
+      }
+    });
+  </script>
+</body>
+</html>

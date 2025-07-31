@@ -86,8 +86,8 @@ GET http://localhost:3000/api-docs
 
 ## Notas importantes:
 
-1. **Simulación de tiempo**: Cada 60 segundos se actualizan automáticamente los estados de todas las mascotas.
-2. **Valores máximos**: Hambre, felicidad y limpieza van de 0 a 20.
-3. **Enfermedades**: Se activan cuando hambre >= 20, limpieza <= 2, o felicidad <= 2.
+1. **Simulación de tiempo**: Cada 30 segundos se actualizan automáticamente los estados de todas las mascotas.
+2. **Valores máximos**: Hambre, felicidad, limpieza y energía van de 1 a 100.
+3. **Enfermedades**: Se activan cuando hambre >= 100, limpieza <= 10, felicidad <= 10, o energía <= 10.
 4. **Mensajes**: Cada acción devuelve un mensaje claro y descriptivo.
-5. **Validaciones**: Se validan errores como mascota no encontrada, sobrealimentación, etc. 
+5. **Validaciones**: Se validan errores como mascota no encontrada, sobrealimentación, etc.

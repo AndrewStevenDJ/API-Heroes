@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🐾 WhiBlu - Dashboard de Mascotas</title>
+  <link rel="stylesheet" href="styles-modern.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+  <!-- Pantalla de bienvenida -->
+  <div id="welcome-view">
+    <div id="logo-conejo">
+      <!-- SVG moderno del logo -->
+      <svg width="120" height="120" viewBox="0 0 120 120">
+        <defs>
+          <linearGradient id="bunnyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#dc2626;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#ef4444;stop-opacity:1" />
+          </linearGradient>
+        </defs>
+        <ellipse cx="60" cy="75" rx="40" ry="35" fill="url(#bunnyGradient)" stroke="none"/>
+        <ellipse cx="38" cy="32" rx="14" ry="30" fill="url(#bunnyGradient)" stroke="none"/>
+        <ellipse cx="82" cy="32" rx="14" ry="30" fill="url(#bunnyGradient)" stroke="none"/>
+        <ellipse cx="38" cy="32" rx="7" ry="20" fill="#fbbf24"/>
+        <ellipse cx="82" cy="32" rx="7" ry="20" fill="#fbbf24"/>
+        <ellipse cx="60" cy="85" rx="20" ry="12" fill="#fbbf24"/>
+        <ellipse cx="48" cy="72" rx="5" ry="7" fill="#1e293b"/>
+        <ellipse cx="72" cy="72" rx="5" ry="7" fill="#1e293b"/>
+        <ellipse cx="60" cy="95" rx="6" ry="3" fill="#1e293b"/>
+      </svg>
+    </div>
+    <h1>🐾 WhiBlu</h1>
+    <p>Cuida de tus mascotas virtuales en este mundo mágico</p>
+    <div id="welcome-buttons">
+      <button class="btn btn-primary" id="btn-register">
+        ✨ Crear Cuenta
+      </button>
+      <button class="btn btn-secondary" id="btn-login">
+        🔑 Iniciar Sesión
+      </button>
+    </div>
+  </div>
+
+  <!-- Vista de registro -->
+  <div id="register-view" class="hidden">
+    <div class="form-container">
+      <h2>✨ Crear Cuenta</h2>
+      <form id="register-form">
+        <div class="form-group">
+          <label for="register-username">Nombre de Usuario</label>
+          <input type="text" id="register-username" placeholder="Elige tu nombre de usuario" required autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label for="register-password">Contraseña</label>
+          <input type="password" id="register-password" placeholder="Crea una contraseña segura" required autocomplete="new-password">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">
+          🚀 Registrarse
+        </button>
+        <div id="register-message" class="form-message"></div>
+      </form>
+      <div class="form-links">
+        ¿Ya tienes cuenta? 
+        <a href="#" id="go-login">Inicia sesión</a>
+        <br><br>
+        <a href="#" id="back-to-welcome1">← Volver</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vista de inicio de sesión -->
+  <div id="login-view" class="hidden">
+    <div class="form-container">
+      <h2>🔑 Iniciar Sesión</h2>
+      <form id="login-form">
+        <div class="form-group">
+          <label for="login-username">Usuario</label>
+          <input type="text" id="login-username" placeholder="Tu nombre de usuario" required autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label for="login-password">Contraseña</label>
+          <input type="password" id="login-password" placeholder="Tu contraseña" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">
+          🎮 Entrar al Juego
+        </button>
+        <div id="login-message" class="form-message"></div>
+      </form>
+      <div class="form-links">
+        ¿No tienes cuenta? 
+        <a href="#" id="go-register">Regístrate</a>
+        <br><br>
+        <a href="#" id="back-to-welcome2">← Volver</a>
+      </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Centro de Comando WhiBlu -->
+  <div id="background" class="hidden">
+    <div class="command-center">
+      <!-- Header del Centro de Comando -->
+      <div class="command-header">
+        <div class="status-bar">
+          <div class="status-left">
+            <span class="system-status">🟢 SISTEMA ONLINE</span>
+            <span class="mission-time" id="mission-time">MISIÓN 00:00</span>
+          </div>
+          <div class="status-center">
+            <h1 class="command-title">
+              ⭐ CENTRO DE COMANDO WHILU ⭐
+            </h1>
+            <p class="operator-id" id="welcome-message">
+              OPERADOR CONECTADO - ESTADO: ACTIVO
+            </p>
+          </div>
+          <div class="status-right">
+            <button class="btn-emergency" id="btn-logout">
+              🚨 DESCONECTAR
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel de Control Principal -->
+      <div class="control-panels">
+        <!-- Panel Izquierdo - Compañeros Activos -->
+        <div class="panel panel-left">
+          <div class="panel-header">
+            <h3 class="panel-title">🚀 COMPAÑEROS ACTIVOS</h3>
+            <div class="panel-controls">
+              <span class="companion-count" id="my-pets-count">0 ACTIVOS</span>
+              <button class="btn-action" id="btn-new-pet">
+                ✨ NUEVA MISIÓN
+              </button>
+            </div>
+          </div>
+          
+          <div class="panel-content" id="my-pets-container">
+            <div class="no-companions-message" id="no-pets-message">
+              <div class="empty-state">
+                <div class="empty-icon">🛸</div>
+                <h4>SIN COMPAÑEROS ASIGNADOS</h4>
+                <p>Inicia una nueva misión para reclutar compañeros</p>
+              </div>
+            </div>
+            <div class="companions-grid" id="my-pets-grid" style="display: none;">
+              <!-- Los compañeros aparecerán aquí -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel Central - Estación de Reclutamiento -->
+        <div class="panel panel-center">
+          <div class="panel-header">
+            <h3 class="panel-title">🌟 ESTACIÓN DE RECLUTAMIENTO</h3>
+            <button class="btn-scan" id="btn-refresh-available">
+              📡 ESCANEAR SECTOR
+            </button>
+          </div>
+          
+          <div class="panel-content">
+            <div class="recruitment-zone" id="available-pets-container">
+              <div class="scanning-message" id="scanning-message">
+                <div class="scan-animation">📡</div>
+                <p>Escaneando el sector en busca de nuevos compañeros...</p>
+              </div>
+              
+              <!-- Carrusel de mascotas disponibles -->
+              <div class="carousel-container" id="carousel-container" style="display: none;">
+                <div class="carousel-track" id="carousel-track">
+                  <!-- Las mascotas aparecerán aquí -->
+                </div>
+                
+                <!-- Controles del carrusel -->
+                <div class="carousel-controls">
+                  <button class="carousel-btn" id="carousel-prev" disabled>‹</button>
+                  <div class="carousel-indicator" id="carousel-indicator">
+                    0 / 0
+                  </div>
+                  <button class="carousel-btn" id="carousel-next">›</button>
+                </div>
+                
+                <!-- Indicadores de puntos -->
+                <div class="carousel-dots" id="carousel-dots">
+                  <!-- Los puntos aparecerán aquí -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel Derecho - Laboratorio -->
+        <div class="panel panel-right" id="create-pet-section" style="display: none;">
+          <div class="panel-header">
+            <h3 class="panel-title">🧬 LABORATORIO DE CREACIÓN</h3>
+            <button class="btn-close" onclick="toggleCreatePetForm()">✕</button>
+          </div>
+          
+          <div class="panel-content">
+            <div class="creation-lab">
+              <div class="lab-title">
+                <h4>🔬 SINTETIZAR NUEVO COMPAÑERO</h4>
+              </div>
+              <form id="create-pet-form" class="synthesis-form">
+                <div class="synthesis-row">
+                  <div class="synthesis-field">
+                    <label>DESIGNACIÓN</label>
+                    <input type="text" id="pet-name" placeholder="Código de compañero" required>
+                  </div>
+                  <div class="synthesis-field">
+                    <label>ESPECIE</label>
+                    <select id="pet-type" required>
+                      <option value="">Seleccionar especie</option>
+                      <option value="perro">🐕 CANINO ALPHA</option>
+                      <option value="gato">🐱 FELINO STEALTH</option>
+                      <option value="conejo">🐰 LAGOMORFO SWIFT</option>
+                      <option value="hamster">🐹 ROEDOR MICRO</option>
+                      <option value="pajaro">🐦 AVIAR SCOUT</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="synthesis-row">
+                  <div class="synthesis-field">
+                    <label>HABILIDAD ESPECIAL</label>
+                    <input type="text" id="pet-power" placeholder="Capacidad única">
+                  </div>
+                  <div class="synthesis-field">
+                    <label>PERSONALIDAD</label>
+                    <select id="pet-personality">
+                      <option value="normal">😊 ESTABLE</option>
+                      <option value="energico">⚡ HIPERACTIVO</option>
+                      <option value="tranquilo">😌 ZEN</option>
+                      <option value="jugueton">🎮 LÚDICO</option>
+                      <option value="dormillon">😴 HIBERNANTE</option>
+                    </select>
+                  </div>
+                </div>
+                <button type="submit" class="btn-synthesize">
+                  🧬 INICIAR SÍNTESIS
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para ver detalles de mascota -->
+  <div id="pet-detail-modal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-pet-name">Nombre de la Mascota</h3>
+        <button class="modal-close" id="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="pet-detail-avatar" id="modal-pet-avatar">🐕</div>
+        <div class="pet-detail-info" id="modal-pet-info">
+          <!-- Información detallada de la mascota -->
+        </div>
+        <div class="stats-container" id="modal-pet-stats">
+          <!-- Barras de estadísticas -->
+        </div>
+        <div class="action-buttons" id="modal-action-buttons">
+          <!-- Botones de acción -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts del juego -->
+  <script src="modern-dashboard.js"></script>
+</body>
+</html>

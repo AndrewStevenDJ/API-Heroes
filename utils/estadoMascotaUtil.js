@@ -7,9 +7,10 @@ export function getEstadoMascota(usuarioId) {
     // Estado inicial por defecto
     const estado = {
       usuarioId,
-      hambre: 50,
+      hambre: 75, // Ahora 100 es satisfecho, 1 es con hambre
       salud: 100,
       felicidad: 50,
+      energia: 100,
       enfermedad: null,
       ropa: []
     };
@@ -22,4 +23,4 @@ export function getEstadoMascota(usuarioId) {
 export function guardarEstadoMascota(usuarioId, estado) {
   const ruta = path.join(path.dirname(new URL(import.meta.url).pathname), '..', `estado-mascota-${usuarioId}.json`);
   fs.writeFileSync(ruta, JSON.stringify(estado, null, 2));
-} 
+}

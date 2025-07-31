@@ -108,10 +108,56 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ error: 'Usuario o contraseña incorrectos' });
     }
     const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: '1d' });
-    res.json({ token, role: user.role });
+    res.json({ 
+      token, 
+      role: user.role, 
+      username: user.username,
+      userId: user._id 
+    });
   } catch (err) {
     console.error('Error en el login:', err);
     res.status(500).json({ error: 'Error en el login' });
+  }
+});
+
+/**
+ * @swagger
+ * /auth/validate:
+ *   get:
+ *     summary: Validar token JWT
+ *     tags: [Autenticación]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Token válido, retorna datos del usuario
+ *       401:
+ *         description: Token inválido o expirado
+ */
+// Validar token
+router.get('/validate', async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(' ')[1];
+    
+    if (!token) {
+      return res.status(401).json({ error: 'Token no proporcionado' });
+    }
+    
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const user = await User.findById(decoded.id).select('-password');
+    
+    if (!user) {
+      return res.status(401).json({ error: 'Usuario no encontrado' });
+    }
+    
+    res.json({
+      username: user.username,
+      role: user.role,
+      userId: user._id
+    });
+  } catch (err) {
+    console.error('Error validando token:', err);
+    res.status(401).json({ error: 'Token inválido' });
   }
 });
 

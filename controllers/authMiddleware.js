@@ -1,7 +1,10 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/userModel.js';
+import dotenv from 'dotenv';
+dotenv.config();
 
-const JWT_SECRET = 'supersecreto'; // Usa variable de entorno en producción
+// Usar el mismo secret que en userController.js para consistencia
+const JWT_SECRET = process.env.JWT_SECRET || 'supersecreto';
 
 // Middleware para autenticar usuario
 export const authenticate = async (req, res, next) => {

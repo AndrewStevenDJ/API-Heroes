@@ -1,0 +1,499 @@
+/*
+ * WhiBlu - Estilos limpios
+ * Versión sin elementos de diagnóstico
+ */
+
+/* Reset básico */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  background-color: #f5f5f5;
+  color: #333;
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Estilos para las vistas */
+#welcome-view, #login-view, #register-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+  padding: 2rem;
+  background-color: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Logo de conejo */
+#logo-conejo {
+  margin: 2rem 0;
+  transition: transform 0.5s ease;
+}
+
+#logo-conejo:hover {
+  transform: scale(1.1) translateY(-10px);
+}
+
+/* Botones principales */
+#welcome-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+button {
+  padding: 0.8rem 1.5rem;
+  background-color: #FFB7B2;
+  border: none;
+  border-radius: 30px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 183, 178, 0.3);
+}
+
+button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(255, 183, 178, 0.5);
+  background-color: #ff9d95;
+}
+
+/* Formularios */
+form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-top: 1rem;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+input {
+  padding: 0.8rem;
+  margin: 0.5rem 0 1rem;
+  border: 2px solid #eee;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+input:focus {
+  outline: none;
+  border-color: #FFB7B2;
+}
+
+/* Enlaces */
+a {
+  color: #FFB7B2;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+a:hover {
+  color: #ff9d95;
+  text-decoration: underline;
+}
+
+/* Estilo del nombre WhiBlu */
+.whiblu {
+  background: linear-gradient(135deg, #FFB7B2 0%, #ffdac1 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: bold;
+}
+
+/* Vista de mascota */
+#background {
+  width: 100%;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #fffcf9;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+/* Selector de mascota */
+#select-pet-view {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 20;
+}
+
+#pet-carousel {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.carousel-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s;
+}
+
+.carousel-btn:hover {
+  background-color: #e0e0e0;
+}
+
+#pet-svg-container {
+  width: 200px;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Contenedor de la mascota en el juego */
+#pet-container {
+  position: absolute;
+  z-index: 50;
+  display: block;
+  width: 250px;
+  height: 250px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+#pet-svg-game {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Botón de alimentación */
+#food-panel-toggle {
+  position: fixed;
+  right: 20px;
+  top: 20px;
+  z-index: 1100;
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 2px solid rgba(255, 183, 178, 0.7) !important;
+  border-radius: 50% !important;
+  width: 60px;
+  height: 60px;
+  box-shadow: 0 4px 15px rgba(255, 183, 178, 0.3) !important;
+  cursor: pointer;
+  font-size: 2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  outline: none;
+  padding: 0;
+  overflow: hidden;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+#food-panel-toggle::before {
+  content: "🍔";
+  transition: transform 0.3s ease;
+}
+
+#food-panel-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 25px rgba(255, 183, 178, 0.5) !important;
+  background: linear-gradient(135deg, #FFF5F5 0%, #FFDAC1 100%) !important;
+}
+
+/* Dashboard de alimentos */
+#food-dashboard {
+  position: fixed;
+  top: 0;
+  right: -320px;
+  width: 320px;
+  height: 100vh;
+  background: white;
+  box-shadow: -5px 0 25px rgba(0,0,0,0.1);
+  z-index: 1000;
+  transition: right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  padding: 20px;
+  overflow-y: auto;
+}
+
+#food-dashboard.visible {
+  right: 0;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.dashboard-header h3 {
+  color: #333;
+  font-size: 1.2rem;
+}
+
+.dashboard-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #999;
+  transition: color 0.3s;
+  box-shadow: none !important;
+}
+
+.dashboard-close:hover {
+  color: #333;
+}
+
+/* Elementos de comida */
+.food-category {
+  margin-bottom: 20px;
+}
+
+.food-category-title {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.food-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.food-item {
+  width: 65px;
+  height: 65px;
+  background: white;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid #f0f0f0;
+  position: relative;
+}
+
+.food-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.food-emoji {
+  font-size: 1.8rem;
+}
+
+.food-name {
+  font-size: 0.7rem;
+  margin-top: 5px;
+  text-align: center;
+  color: #555;
+}
+
+.food-tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.8);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 0.7rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.food-item:hover .food-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(-5px);
+}
+
+/* Barras de estado */
+#stats-container {
+  position: fixed;
+  left: 20px;
+  top: 20px;
+  z-index: 100;
+  background: white;
+  padding: 15px;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+.stat-bar {
+  width: 180px;
+  height: 12px;
+  background: #f0f0f0;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.stat-bar-label {
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 3px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.stat-bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.4s;
+}
+
+.stat-hunger .stat-bar-fill {
+  background: linear-gradient(90deg, #FFB7B2, #ff9d95);
+}
+
+.stat-energy .stat-bar-fill {
+  background: linear-gradient(90deg, #FDCB6E, #F0932B);
+}
+
+.stat-happiness .stat-bar-fill {
+  background: linear-gradient(90deg, #7ED6DF, #22A6B3);
+}
+
+.stat-cleanliness .stat-bar-fill {
+  background: linear-gradient(90deg, #A3CB38, #009432);
+}
+
+/* Efectos de arrastre de comida */
+.food-clone {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+}
+
+/* Estilos para drag & drop */
+.pet-feed-zone {
+  width: 200px;
+  height: 200px;
+  position: absolute;
+  z-index: 100;
+  border-radius: 50%;
+  pointer-events: all;
+  background-color: rgba(255, 183, 178, 0.1);
+  border: 2px dashed rgba(255, 183, 178, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.pet-feed-zone.highlight {
+  background-color: rgba(255, 183, 178, 0.2);
+  border: 2px dashed rgba(255, 183, 178, 0.5);
+  transform: scale(1.1);
+}
+
+/* Asegurarse que no haya botones de diagnóstico */
+.radial-btn, .center-btn, 
+[id*="debug"], [id*="test"], [id*="emergency"], 
+[class*="debug"], [class*="test"], [class*="emergency"] {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+/* Animación para la comida */
+@keyframes wiggle {
+  0% { transform: rotate(-5deg); }
+  100% { transform: rotate(5deg); }
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+  #food-dashboard {
+    width: 280px;
+    right: -280px;
+  }
+  
+  .food-item {
+    width: 55px;
+    height: 55px;
+  }
+  
+  .food-emoji {
+    font-size: 1.5rem;
+  }
+  
+  #food-panel-toggle {
+    width: 50px;
+    height: 50px;
+    right: 15px;
+    top: 15px;
+  }
+  
+  #stats-container {
+    left: 15px;
+    top: 15px;
+    padding: 10px;
+  }
+  
+  .stat-bar {
+    width: 150px;
+  }
+}

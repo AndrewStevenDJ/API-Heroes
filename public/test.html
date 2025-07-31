@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🐾 WhiBlu - Dashboard de Mascotas</title>
+  <link rel="stylesheet" href="styles-modern.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+      color: white;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+    }
+    
+    .debug-info {
+      background: rgba(30, 41, 59, 0.8);
+      padding: 20px;
+      border-radius: 12px;
+      margin: 20px 0;
+      border: 1px solid #f472b6;
+    }
+    
+    .test-button {
+      background: linear-gradient(135deg, #ec4899, #f472b6);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 10px;
+    }
+    
+    .test-button:hover {
+      background: linear-gradient(135deg, #f472b6, #ec4899);
+    }
+  </style>
+</head>
+<body>
+  <h1>🐾 WhiBlu - Test Page</h1>
+  
+  <div class="debug-info">
+    <h2>🔧 Información de Debug</h2>
+    <p><strong>URL actual:</strong> <span id="current-url">Cargando...</span></p>
+    <p><strong>Timestamp:</strong> <span id="timestamp">Cargando...</span></p>
+    <p><strong>Estado:</strong> ✅ HTML cargado correctamente</p>
+  </div>
+  
+  <div class="debug-info">
+    <h2>🎨 Test de Estilos</h2>
+    <p>Si puedes ver este texto con fondo oscuro y bordes rosa, los estilos están funcionando.</p>
+    <button class="test-button" onclick="testFunction()">🧪 Probar JavaScript</button>
+    <div id="js-result" style="margin-top: 10px;"></div>
+  </div>
+  
+  <div class="debug-info">
+    <h2>📡 Test de Conectividad</h2>
+    <button class="test-button" onclick="testAPI()">🔌 Probar API</button>
+    <div id="api-result" style="margin-top: 10px;"></div>
+  </div>
+  
+  <div class="debug-info">
+    <h2>🚀 Navegación</h2>
+    <a href="/index.html" class="test-button" style="text-decoration: none; display: inline-block;">📄 Versión Original</a>
+    <a href="/modern" class="test-button" style="text-decoration: none; display: inline-block;">✨ Versión Moderna</a>
+  </div>
+
+  <script>
+    // Información básica
+    document.getElementById('current-url').textContent = window.location.href;
+    document.getElementById('timestamp').textContent = new Date().toLocaleString();
+    
+    // Test de JavaScript
+    function testFunction() {
+      const result = document.getElementById('js-result');
+      result.innerHTML = '<span style="color: #10b981;">✅ JavaScript funcionando correctamente!</span>';
+      console.log('✅ JavaScript test passed');
+    }
+    
+    // Test de API
+    async function testAPI() {
+      const result = document.getElementById('api-result');
+      result.innerHTML = '<span style="color: #fbbf24;">⏳ Probando conexión...</span>';
+      
+      try {
+        const response = await fetch('/mascotas/disponibles');
+        if (response.ok) {
+          const data = await response.json();
+          result.innerHTML = `<span style="color: #10b981;">✅ API funcionando - ${data.length} mascotas encontradas</span>`;
+        } else {
+          result.innerHTML = `<span style="color: #ef4444;">❌ API error: ${response.status}</span>`;
+        }
+      } catch (error) {
+        result.innerHTML = `<span style="color: #ef4444;">❌ Error de conexión: ${error.message}</span>`;
+      }
+    }
+    
+    // Auto-test al cargar
+    console.log('🎮 WhiBlu Test Page cargada exitosamente');
+    console.log('📍 URL:', window.location.href);
+    console.log('🕒 Timestamp:', new Date().toISOString());
+  </script>
+</body>
+</html>

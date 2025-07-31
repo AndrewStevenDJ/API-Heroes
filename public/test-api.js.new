@@ -1,0 +1,32 @@
+// Versión limpia de test-api.js sin paneles de diagnóstico
+document.addEventListener('DOMContentLoaded', function() {
+  // Mantener solo la lógica de testing sin crear interfaces visuales
+  const API_BASE = window.API_BASE || 'http://localhost:3000';
+  
+  // Test simplificado que solo verifica la API sin mostrar resultados
+  async function testApiConnection() {
+    try {
+      const startTime = performance.now();
+      const response = await fetch(`${API_BASE}/`);
+      const endTime = performance.now();
+      const timeMs = Math.round(endTime - startTime);
+      
+      if (response.ok) {
+        console.log(`✅ API conectada (${timeMs}ms)`);
+        return true;
+      } else {
+        console.warn(`⚠️ API responde con error: ${response.status}`);
+        return false;
+      }
+    } catch (error) {
+      console.error('❌ Error de conexión a la API');
+      return false;
+    }
+  }
+  
+  // Ejecutar en segundo plano sin interferir con la interfaz
+  setTimeout(testApiConnection, 2000);
+  
+  // Mantener la función de prueba pero sin crear paneles visuales
+  window.testApi = testApiConnection;
+});

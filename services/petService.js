@@ -62,15 +62,15 @@ async function alimentarMascota(id) {
         throw new Error('Mascota no encontrada');
     }
     const mascota = pets[index];
-    if (mascota.hambre <= 0) {
+    if (mascota.hambre <= 1) {
         mascota.enfermedad = 'indigestión por exceso de comida';
         await petRepository.savePets(pets);
         return { mensaje: `¡Cuidado! La mascota ya no tiene hambre y se enfermó de indigestión.` };
     }
-    mascota.hambre = Math.max(mascota.hambre - 3, 0);
-    if (mascota.hambre === 0) {
+    mascota.hambre = Math.max(mascota.hambre - 15, 1);
+    if (mascota.hambre === 1) {
         mascota.enfermedad = 'indigestión por exceso de comida';
-    } else if (mascota.hambre < 5) {
+    } else if (mascota.hambre < 25) {
         mascota.enfermedad = null;
     }
     await petRepository.savePets(pets);
@@ -84,8 +84,8 @@ async function banarMascota(id) {
         throw new Error('Mascota no encontrada');
     }
     const mascota = pets[index];
-    mascota.limpieza = Math.min(mascota.limpieza + 5, 20);
-    if (mascota.limpieza >= 15) {
+    mascota.limpieza = Math.min(mascota.limpieza + 25, 100);
+    if (mascota.limpieza >= 75) {
         mascota.enfermedad = null;
     }
     await petRepository.savePets(pets);
@@ -99,9 +99,9 @@ async function jugarMascota(id) {
         throw new Error('Mascota no encontrada');
     }
     const mascota = pets[index];
-    mascota.felicidad = Math.min(mascota.felicidad + 4, 20);
-    mascota.hambre = Math.min(mascota.hambre + 1, 20);
-    if (mascota.felicidad >= 15) {
+    mascota.felicidad = Math.min(mascota.felicidad + 20, 100);
+    mascota.hambre = Math.min(mascota.hambre + 5, 100);
+    if (mascota.felicidad >= 75) {
         mascota.enfermedad = null;
     }
     await petRepository.savePets(pets);
@@ -115,10 +115,10 @@ async function pasearMascota(id) {
         throw new Error('Mascota no encontrada');
     }
     const mascota = pets[index];
-    mascota.felicidad = Math.min(mascota.felicidad + 3, 20);
-    mascota.limpieza = Math.max(mascota.limpieza - 2, 0);
-    mascota.hambre = Math.min(mascota.hambre + 2, 20);
-    if (mascota.felicidad >= 15) {
+    mascota.felicidad = Math.min(mascota.felicidad + 15, 100);
+    mascota.limpieza = Math.max(mascota.limpieza - 10, 1);
+    mascota.hambre = Math.min(mascota.hambre + 10, 100);
+    if (mascota.felicidad >= 75) {
         mascota.enfermedad = null;
     }
     await petRepository.savePets(pets);
@@ -179,6 +179,7 @@ async function verEstado(id) {
             hambre: mascota.hambre,
             felicidad: mascota.felicidad,
             limpieza: mascota.limpieza,
+            energia: mascota.energia,
             enfermedad: mascota.enfermedad || 'Sana',
             ropa: mascota.ropa
         }
@@ -214,9 +215,26 @@ async function quitarObjetoAMascota(petId, objetoId) {
     return { mensaje: `Objeto eliminado de la mascota`, objeto: eliminado };
 }
 
+async function dormirMascota(id) {
+    const pets = await petRepository.getPets();
+    const index = pets.findIndex(pet => pet.id === parseInt(id));
+    if (index === -1) {
+        throw new Error('Mascota no encontrada');
+    }
+    const mascota = pets[index];
+    mascota.energia = Math.min(mascota.energia + 30, 100);
+    if (mascota.energia >= 75) {
+        if (mascota.enfermedad === 'fatiga') {
+            mascota.enfermedad = null;
+        }
+    }
+    await petRepository.savePets(pets);
+    return { mensaje: `La mascota ha dormido y recuperado energía. Energía actual: ${mascota.energia}` };
+}
+
 export default {
-    getAllPets,
-    getAvailablePets,
+    getPets: getAllPets,
+    getPetById: getAvailablePets,
     addPet,
     updatePet,
     deletePet,
@@ -225,9 +243,10 @@ export default {
     jugarMascota,
     pasearMascota,
     curarMascota,
+    dormirMascota,
     verRopa,
     cambiarRopa,
     verEstado,
     agregarObjetoAMascota,
     quitarObjetoAMascota
-}; 
+};

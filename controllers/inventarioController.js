@@ -21,9 +21,11 @@ const usarComida = (req, res) => {
   // Aplicar efectos al estado de la mascota
   const estado = getEstadoMascota(usuarioId);
   if (comida.efectos) {
-    if (typeof comida.efectos.hambre === 'number') estado.hambre = Math.max(0, estado.hambre + comida.efectos.hambre);
+    // Invertimos el efecto del hambre (valor negativo ahora aumenta el hambre, valor positivo lo disminuye)
+    if (typeof comida.efectos.hambre === 'number') estado.hambre = Math.min(100, Math.max(1, estado.hambre - comida.efectos.hambre));
     if (typeof comida.efectos.salud === 'number') estado.salud = Math.max(0, Math.min(100, estado.salud + comida.efectos.salud));
     if (typeof comida.efectos.felicidad === 'number') estado.felicidad = Math.max(0, Math.min(100, estado.felicidad + comida.efectos.felicidad));
+    if (typeof comida.efectos.energia === 'number') estado.energia = Math.max(0, Math.min(100, estado.energia + comida.efectos.energia));
   }
   guardarEstadoMascota(usuarioId, estado);
   item.cantidad -= 1;
@@ -93,4 +95,4 @@ export default {
   usarMedicina,
   equiparRopa,
   desequiparRopa
-}; 
+};

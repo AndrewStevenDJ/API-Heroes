@@ -111,6 +111,80 @@ router.post('/', authenticate, requireRole('admin'), async (req, res) => {
 
 /**
  * @swagger
+ * /mascotas/crear:
+ *   post:
+ *     summary: Crear una mascota personalizada (usuarios regulares)
+ *     tags: [Mascota]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nombre:
+ *                 type: string
+ *                 description: Nombre de la mascota
+ *               tipo:
+ *                 type: string
+ *                 description: Tipo de mascota (perro, gato, etc.)
+ *               poderEspecial:
+ *                 type: string
+ *                 description: Poder especial de la mascota
+ *               personalidad:
+ *                 type: string
+ *                 description: Personalidad de la mascota
+ *             required:
+ *               - nombre
+ *               - tipo
+ *     responses:
+ *       201:
+ *         description: Mascota creada exitosamente
+ *       400:
+ *         description: Faltan campos obligatorios
+ *     security: [{ bearerAuth: [] }]
+ */
+// POST /mascotas/crear - crear mascota personalizada (usuarios regulares)
+router.post('/crear', authenticate, async (req, res) => {
+  const { nombre, tipo, poderEspecial, personalidad } = req.body;
+  
+  if (!nombre || !tipo) {
+    return res.status(400).json({ error: 'Faltan campos obligatorios: nombre y tipo' });
+  }
+  
+  try {
+    // Obtener el siguiente id secuencial
+    const lastPet = await Pet.findOne().sort({ id: -1 });
+    const nextId = lastPet && lastPet.id ? lastPet.id + 1 : 1;
+    
+    const newPet = new Pet({ 
+      id: nextId, 
+      nombre, 
+      tipo, 
+      superpoder: poderEspecial || 'Ninguno',
+      personalidad: personalidad || 'Normal',
+      // Estadísticas iniciales perfectas para nueva mascota
+      hambre: 10,      // Poca hambre (invertido)
+      felicidad: 100,  // Muy feliz
+      energia: 100,    // Mucha energía
+      limpieza: 100,   // Muy limpia
+      salud: 100       // Muy saludable
+    });
+    
+    await newPet.save();
+    console.log(`✨ Nueva mascota creada: ${nombre} (${tipo}) con ID: ${nextId}`);
+    res.status(201).json({ 
+      message: 'Mascota creada exitosamente', 
+      mascota: newPet 
+    });
+  } catch (error) {
+    console.error('Error creando mascota personalizada:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * @swagger
  * /mascotas/{id}:
  *   put:
  *     summary: Actualizar una mascota
@@ -245,16 +319,20 @@ router.post('/adoptar/:id', authenticate, async (req, res) => {
  *           nullable: true
  *         hambre:
  *           type: integer
- *           minimum: 0
- *           maximum: 20
+ *           minimum: 1
+ *           maximum: 100
  *         felicidad:
  *           type: integer
- *           minimum: 0
- *           maximum: 20
+ *           minimum: 1
+ *           maximum: 100
  *         limpieza:
  *           type: integer
- *           minimum: 0
- *           maximum: 20
+ *           minimum: 1
+ *           maximum: 100
+ *         energia:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
  *         enfermedad:
  *           type: string
  *           nullable: true
@@ -277,16 +355,16 @@ router.post('/adoptar/:id', authenticate, async (req, res) => {
  *           type: string
  *         hambre:
  *           type: integer
- *           minimum: 0
- *           maximum: 20
+ *           minimum: 1
+ *           maximum: 100
  *         felicidad:
  *           type: integer
- *           minimum: 0
- *           maximum: 20
+ *           minimum: 1
+ *           maximum: 100
  *         limpieza:
  *           type: integer
- *           minimum: 0
- *           maximum: 20
+ *           minimum: 1
+ *           maximum: 100
  *         enfermedad:
  *           type: string
  *         ropa:
@@ -543,6 +621,50 @@ router.post('/:id/curar', authenticate, async (req, res) => {
 
 /**
  * @swagger
+ * /mascotas/{id}/dormir:
+ *   post:
+ *     summary: Hacer dormir a una mascota para recuperar energía
+ *     tags: [Cuidado]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID de la mascota
+ *     responses:
+ *       200:
+ *         description: Mensaje de resultado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 mensaje:
+ *                   type: string
+ *       404:
+ *         description: Mascota no encontrada
+ *     security: [{ bearerAuth: [] }]
+ */
+// Dormir
+router.post('/:id/dormir', authenticate, async (req, res) => {
+  const { id } = req.params;
+  console.log('--- [CUIDADO] ---');
+  console.log('ID recibido:', id);
+  console.log('Usuario autenticado:', req.user);
+  try {
+    const mascota = await findPetByAnyIdAndOwner(id, req.user);
+    console.log('Mascota encontrada:', mascota);
+    if (!mascota) throw new Error('Mascota no encontrada');
+    const resultado = await petService.dormirMascota(mascota.id);
+    res.json(resultado);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+});
+
+/**
+ * @swagger
  * /mascotas/{id}/ropa:
  *   get:
  *     summary: Ver la ropa de una mascota
@@ -677,6 +799,8 @@ router.post('/:id/ropa/agregar', authenticate, async (req, res) => {
  *                   type: number
  *                 felicidad:
  *                   type: number
+ *                 energia:
+ *                   type: number
  *                 limpieza:
  *                   type: number
  *                 enfermedad:
@@ -692,19 +816,26 @@ router.post('/:id/ropa/agregar', authenticate, async (req, res) => {
 // Ver estado
 router.get('/:id/estado', authenticate, async (req, res) => {
   const { id } = req.params;
-  console.log('--- [ESTADO] ---');
-  console.log('ID recibido:', id);
-  console.log('Usuario autenticado:', req.user);
   try {
-    const mascota = await findPetByAnyIdAndOwner(id, req.user);
-    console.log('Mascota encontrada:', mascota);
+    // Buscar mascota por _id o id secuencial y ownerId
+    let mascota = null;
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      mascota = await Pet.findOne({ _id: id, ownerId: req.user.id });
+    }
+    if (!mascota && !isNaN(Number(id))) {
+      mascota = await Pet.findOne({ id: Number(id), ownerId: req.user.id });
+    }
     if (!mascota) throw new Error('Mascota no encontrada');
-    const resultado = await petService.verEstado(mascota.id);
     res.json({
       nombre: mascota.nombre,
       id: mascota.id,
       _id: mascota._id,
-      ...resultado
+      hambre: mascota.hambre,
+      felicidad: mascota.felicidad,
+      energia: mascota.energia,
+      limpieza: mascota.limpieza,
+      enfermedad: mascota.enfermedad,
+      ropa: mascota.ropa
     });
   } catch (error) {
     res.status(404).json({ error: error.message });
@@ -805,4 +936,4 @@ router.delete('/:id/objetos/:objetoId', authenticate, async (req, res) => {
   }
 });
 
-export default router; 
+export default router;

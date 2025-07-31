@@ -1,5 +1,14 @@
 import express from 'express'
 import cors from 'cors'
+import dotenv from 'dotenv'
+import path from 'path'
+import { fileURLToPath } from 'url'
+dotenv.config()
+
+// Para usar __dirname con ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 import heroController from './controllers/heroController.js'
 import petController from './controllers/petController.js'
 import objetoController from './controllers/objetoController.js'
@@ -19,6 +28,24 @@ app.use(cors());
 const PORT = 3000
 
 app.use(express.json())
+
+// Servir archivos estáticos desde la carpeta public
+app.use(express.static('public'))
+
+// Ruta especial para la versión moderna completa
+app.get('/modern', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index-modern.html'));
+});
+
+// Ruta para la versión simplificada
+app.get('/simple', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'simple-modern.html'));
+});
+
+// Ruta principal - ahora sirve la versión simplificada por defecto
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'simple-modern.html'));
+});
 
 // Usar el controlador para la ruta /heroes
 app.use('/heroes', heroController)
