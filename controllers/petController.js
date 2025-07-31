@@ -60,10 +60,31 @@ router.get('/', authenticate, requireRole('admin'), async (req, res) => {
 // GET /mascotas/disponibles - obtener solo las mascotas sin dueño
 router.get('/disponibles', async (req, res) => {
   try {
+    console.log('🐾 ===== SOLICITUD DE MASCOTAS DISPONIBLES (PetController) =====');
+    
     // Buscar mascotas sin dueño (ownerId en null)
     const pets = await Pet.find({ ownerId: null });
+    console.log('📊 Total mascotas disponibles encontradas:', pets.length);
+    
+    if (pets.length > 0) {
+      console.log('🐾 Primeras 3 mascotas disponibles:');
+      pets.slice(0, 3).forEach((pet, index) => {
+        console.log(`   ${index + 1}. ${pet.nombre} (ID: ${pet.id || pet._id}) - Tipo: ${pet.tipo}`);
+      });
+    } else {
+      console.log('❌ No se encontraron mascotas disponibles');
+      // Vamos a verificar cuántas mascotas hay en total
+      const totalPets = await Pet.countDocuments();
+      console.log('📊 Total de mascotas en BD:', totalPets);
+      if (totalPets > 0) {
+        const adoptedPets = await Pet.countDocuments({ ownerId: { $ne: null } });
+        console.log('🏠 Mascotas ya adoptadas:', adoptedPets);
+      }
+    }
+    
     res.json(pets);
   } catch (error) {
+    console.error('❌ Error obteniendo mascotas disponibles:', error);
     res.status(500).json({ error: error.message });
   }
 });

@@ -870,6 +870,20 @@ body {
   box-shadow: 0 5px 15px rgba(220, 38, 38, 0.4);
 }
 
+.btn-action:disabled {
+  background: linear-gradient(135deg, #6b7280, #9ca3af);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  opacity: 0.6;
+}
+
+.btn-action:disabled:hover {
+  background: linear-gradient(135deg, #6b7280, #9ca3af);
+  transform: none;
+  box-shadow: none;
+}
+
 .btn-scan {
   background: linear-gradient(135deg, #3b82f6, #1d4ed8);
   color: white;
@@ -1265,5 +1279,391 @@ body {
   .carousel-controls {
     margin-top: 0.5rem;
     padding: 0;
+  }
+}
+
+/* ========== INTERFAZ DE MASCOTA ADOPTADA ========== */
+#adopted-pet-view {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+.adopted-container {
+  min-height: 100vh;
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Header de la adopción */
+.adopted-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3rem;
+  background: rgba(220, 38, 38, 0.1);
+  padding: 2rem;
+  border-radius: 15px;
+  border: 2px solid #dc2626;
+  box-shadow: 0 0 30px rgba(220, 38, 38, 0.3);
+}
+
+.header-content {
+  text-align: left;
+}
+
+.adoption-title {
+  font-size: 3rem;
+  color: #ef4444;
+  margin: 0;
+  text-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.adoption-subtitle {
+  font-size: 1.3rem;
+  color: #cbd5e1;
+  margin: 0.5rem 0 0 0;
+  opacity: 0.8;
+}
+
+.btn-back-dashboard {
+  background: linear-gradient(135deg, #374151, #4b5563);
+  color: white;
+  border: 2px solid #6b7280;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.btn-back-dashboard:hover {
+  background: linear-gradient(135deg, #4b5563, #6b7280);
+  box-shadow: 0 5px 15px rgba(107, 114, 128, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Panel principal */
+.adopted-main {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 3rem;
+  background: rgba(15, 15, 35, 0.8);
+  padding: 3rem;
+  border-radius: 20px;
+  border: 2px solid #dc2626;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+}
+
+/* Sección del avatar */
+.pet-avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.pet-avatar-large {
+  font-size: 8rem;
+  margin-bottom: 2rem;
+  padding: 2rem;
+  background: radial-gradient(circle, rgba(220, 38, 38, 0.2) 0%, rgba(220, 38, 38, 0.05) 100%);
+  border-radius: 50%;
+  border: 3px solid #dc2626;
+  box-shadow: 0 0 40px rgba(220, 38, 38, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 200px;
+  height: 200px;
+  animation: petGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes petGlow {
+  from {
+    box-shadow: 0 0 40px rgba(220, 38, 38, 0.3);
+  }
+  to {
+    box-shadow: 0 0 60px rgba(220, 38, 38, 0.6);
+  }
+}
+
+.pet-info-basic {
+  width: 100%;
+}
+
+.pet-name-large {
+  font-size: 2.5rem;
+  color: #ef4444;
+  margin: 0 0 1rem 0;
+  font-weight: 900;
+  text-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
+}
+
+.pet-type, .pet-power {
+  font-size: 1.2rem;
+  color: #cbd5e1;
+  margin: 0.5rem 0;
+  font-weight: 500;
+}
+
+.adoption-badge {
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+  padding: 1rem 2rem;
+  border-radius: 25px;
+  margin: 2rem 0;
+  box-shadow: 0 5px 15px rgba(220, 38, 38, 0.4);
+}
+
+.badge-text {
+  color: white;
+  font-weight: 700;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Sección de estados */
+.pet-status-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.status-title {
+  color: #ef4444;
+  font-size: 1.8rem;
+  margin: 0;
+  text-align: center;
+  text-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Barras de estado mejoradas */
+.stats-container-adopted {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 2rem;
+  border-radius: 15px;
+  border: 1px solid #374151;
+}
+
+.stats-container-adopted .stat-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: rgba(15, 15, 35, 0.6);
+  padding: 1rem;
+  border-radius: 10px;
+  border: 1px solid #4b5563;
+}
+
+.stats-container-adopted .stat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.stats-container-adopted .stat-icon {
+  font-size: 1.2rem;
+  margin-right: 0.5rem;
+}
+
+.stats-container-adopted .stat-label {
+  font-weight: 600;
+  color: #e2e8f0;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex: 1;
+}
+
+.stats-container-adopted .stat-value {
+  font-weight: 700;
+  color: #fbbf24;
+  font-size: 1rem;
+  min-width: 50px;
+  text-align: right;
+}
+
+.stats-container-adopted .stat-progress {
+  flex: 1;
+  height: 25px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid #374151;
+  position: relative;
+}
+
+.stats-container-adopted .stat-fill {
+  height: 100%;
+  border-radius: 10px;
+  transition: all 0.5s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.stats-container-adopted .stat-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+.stats-container-adopted .stat-value {
+  min-width: 60px;
+  text-align: right;
+  font-weight: 700;
+  color: white;
+  font-size: 1rem;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Grid de acciones */
+.action-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.action-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, rgba(220, 38, 38, 0.1), rgba(220, 38, 38, 0.05));
+  border: 2px solid #dc2626;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+  color: white;
+  font-family: inherit;
+}
+
+.action-card:hover {
+  background: linear-gradient(135deg, rgba(220, 38, 38, 0.2), rgba(220, 38, 38, 0.1));
+  box-shadow: 0 5px 20px rgba(220, 38, 38, 0.3);
+  transform: translateY(-3px);
+  border-color: #ef4444;
+}
+
+.action-icon {
+  font-size: 2rem;
+  width: 50px;
+  text-align: center;
+}
+
+.action-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.action-name {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #ef4444;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.action-desc {
+  font-size: 0.9rem;
+  color: #cbd5e1;
+  opacity: 0.8;
+}
+
+/* Descripción de la mascota */
+.pet-description {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 2rem;
+  border-radius: 15px;
+  border: 1px solid #374151;
+}
+
+.pet-description h4 {
+  color: #ef4444;
+  margin: 0 0 1rem 0;
+  font-size: 1.3rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.pet-desc-text {
+  color: #cbd5e1;
+  line-height: 1.6;
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* Responsive para la interfaz de adopción */
+@media (max-width: 1024px) {
+  .adopted-main {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .pet-avatar-large {
+    font-size: 6rem;
+    width: 150px;
+    height: 150px;
+  }
+  
+  .adoption-title {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .adopted-container {
+    padding: 1rem;
+  }
+  
+  .adopted-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+  
+  .action-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .pet-avatar-large {
+    font-size: 5rem;
+    width: 120px;
+    height: 120px;
+  }
+  
+  .pet-name-large {
+    font-size: 2rem;
   }
 }

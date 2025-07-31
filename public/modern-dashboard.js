@@ -187,6 +187,12 @@ function setupEventListeners() {
       return;
     }
     
+    if (target.id === 'btn-view-pet-status') {
+      e.preventDefault();
+      viewFirstPetStatus();
+      return;
+    }
+
     if (target.id === 'modal-close') {
       e.preventDefault();
       closeModal();
@@ -432,24 +438,36 @@ async function loadUserData() {
 
 async function loadMyPets() {
   try {
+    console.log('🔍 Cargando mis mascotas...');
     const response = await authFetch(`${API_BASE}/mis-mascotas`);
+    console.log('📡 Respuesta del servidor:', response.status);
+    
     if (response.ok) {
       myPets = await response.json();
+      console.log('✅ Mis mascotas cargadas:', myPets.length, myPets);
       renderMyPets();
+    } else {
+      console.error('❌ Error al cargar mis mascotas:', response.status);
+      const errorText = await response.text();
+      console.error('❌ Mensaje de error:', errorText);
     }
   } catch (error) {
-    console.error('Error cargando mis mascotas:', error);
+    console.error('❌ Error cargando mis mascotas:', error);
   }
 }
 
 async function loadAvailablePets() {
   try {
-    const response = await authFetch(`${API_BASE}/mascotas`);
+    console.log('🔍 Cargando mascotas disponibles...');
+    const response = await authFetch(`${API_BASE}/mascotas/disponibles`);
     if (response.ok) {
-      const allPets = await response.json();
-      // Filtrar solo las mascotas disponibles (sin owner)
-      availablePets = allPets.filter(pet => !pet.ownerId);
+      availablePets = await response.json();
+      console.log('✅ Mascotas disponibles cargadas:', availablePets.length);
       renderAvailablePets();
+    } else {
+      console.error('❌ Error en respuesta del servidor:', response.status);
+      const errorData = await response.json().catch(() => ({}));
+      console.error('Error details:', errorData);
     }
   } catch (error) {
     console.error('Error cargando mascotas disponibles:', error);
@@ -458,20 +476,43 @@ async function loadAvailablePets() {
 
 // ========== RENDERIZADO ==========
 function renderMyPets() {
+  console.log('🎨 Renderizando mis mascotas...', myPets);
+  
   const container = document.getElementById('my-pets-container');
   const noMascPetsMsg = document.getElementById('no-pets-message');
   const myPetsGrid = document.getElementById('my-pets-grid');
   const petsCount = document.getElementById('my-pets-count');
+  const viewStatusBtn = document.getElementById('btn-view-pet-status');
   
-  petsCount.textContent = `(${myPets.length})`;
+  console.log('📊 Elementos del DOM encontrados:', {
+    container: !!container,
+    noMascPetsMsg: !!noMascPetsMsg,
+    myPetsGrid: !!myPetsGrid,
+    petsCount: !!petsCount,
+    viewStatusBtn: !!viewStatusBtn
+  });
+  
+  petsCount.textContent = `${myPets.length} ACTIVOS`;
+  
+  // Habilitar/deshabilitar botón de ver estado
+  if (myPets.length > 0) {
+    viewStatusBtn.disabled = false;
+    viewStatusBtn.style.opacity = '1';
+  } else {
+    viewStatusBtn.disabled = true;
+    viewStatusBtn.style.opacity = '0.6';
+  }
   
   if (myPets.length === 0) {
+    console.log('🚫 Sin mascotas - mostrando mensaje vacío');
     noMascPetsMsg.style.display = 'block';
     myPetsGrid.style.display = 'none';
   } else {
+    console.log('✅ Renderizando', myPets.length, 'mascotas');
     noMascPetsMsg.style.display = 'none';
     myPetsGrid.style.display = 'grid';
     
+    console.log('🏗️ Creando tarjetas de mascotas...');
     myPetsGrid.innerHTML = myPets.map(pet => createPetCard(pet, true)).join('');
     
     // Agregar event listeners para las mascotas propias
@@ -482,6 +523,8 @@ function renderMyPets() {
         card.addEventListener('click', () => openPetModal(pet, true));
       }
     });
+    
+    console.log('🎉 Mascotas renderizadas exitosamente');
   }
 }
 
@@ -808,7 +851,11 @@ async function adoptPet(petId) {
     if (response.ok) {
       const result = await response.json();
       console.log('✅ Adopción exitosa:', result);
-      alert('🎉 ¡Mascota adoptada exitosamente!');
+      
+      // Mostrar la pantalla de mascota adoptada
+      showAdoptedPetView(result.mascota);
+      
+      // Recargar los datos para actualizar las listas
       await loadMyPets();
       await loadAvailablePets();
     } else {
@@ -939,5 +986,373 @@ window.sleepPet = sleepPet;
 window.bathePet = bathePet;
 window.healPet = healPet;
 window.deletePet = deletePet;
+window.viewFirstPetStatus = viewFirstPetStatus;
+
+// Función de debug para probar manualmente
+window.debugLoadMyPets = async function() {
+  console.log('🔧 [DEBUG] Cargando mascotas manualmente...');
+  await loadMyPets();
+};
+
+// Función de debug para verificar datos
+window.debugShowMyPets = function() {
+  console.log('🔧 [DEBUG] Mis mascotas actuales:', myPets);
+  console.log('🔧 [DEBUG] Estado de elementos DOM:', {
+    container: document.getElementById('my-pets-container'),
+    grid: document.getElementById('my-pets-grid'),
+    count: document.getElementById('my-pets-count')
+  });
+};
+
+// ========== INTERFAZ DE MASCOTA ADOPTADA ==========
+function viewFirstPetStatus() {
+  console.log('👁️ Intentando ver estado de mascota...');
+  
+  if (myPets.length === 0) {
+    console.log('❌ No hay mascotas para mostrar');
+    alert('🚫 No tienes mascotas activas para ver su estado');
+    return;
+  }
+  
+  // Mostrar la primera mascota (o la seleccionada)
+  const firstPet = myPets[0];
+  console.log('📊 Mostrando estado de:', firstPet.nombre);
+  showAdoptedPetView(firstPet);
+}
+
+function showAdoptedPetView(pet) {
+  console.log('🎉 Mostrando interfaz de mascota adoptada:', pet);
+  
+  // Ocultar dashboard principal
+  document.getElementById('background').classList.add('hidden');
+  
+  // Mostrar interfaz de adopción
+  const adoptedView = document.getElementById('adopted-pet-view');
+  adoptedView.classList.remove('hidden');
+  
+  // Llenar datos de la mascota
+  populateAdoptedPetData(pet);
+  
+  // Configurar event listeners
+  setupAdoptedPetEventListeners(pet);
+}
+
+function populateAdoptedPetData(pet) {
+  // Avatar y emoji
+  const petEmoji = getPetEmoji(pet.tipo || pet.nombre);
+  document.getElementById('adopted-pet-avatar').textContent = petEmoji;
+  
+  // Información básica
+  document.getElementById('adopted-pet-name').textContent = pet.nombre;
+  document.getElementById('adopted-pet-type').textContent = `Tipo: ${pet.tipo || 'Perro'}`;
+  document.getElementById('adopted-pet-power').textContent = `Poder: ${pet.poderEspecial || pet.superpoder || 'Ninguno'}`;
+  
+  // Barras de estado
+  createAdoptedPetStats(pet);
+  
+  // Descripción personalizada
+  const descriptions = {
+    'perro': 'Un compañero leal perfecto para misiones de exploración y vigilancia.',
+    'gato': 'Ágil y sigiloso, ideal para operaciones de reconocimiento nocturno.',
+    'conejo': 'Rápido y eficiente, especialista en comunicaciones de emergencia.',
+    'loro': 'Comunicador excepcional con habilidades de traducción intergaláctica.',
+    'tortuga': 'Estratega paciente con sabiduría milenaria para decisiones críticas.',
+    'hamster': 'Especialista en espacios reducidos y sistemas de ventilación.'
+  };
+  
+  const defaultDesc = 'Tu nuevo compañero está listo para unirse a las misiones espaciales. Cuida de él regularmente para mantenerlo en óptimas condiciones.';
+  const petType = (pet.tipo || 'perro').toLowerCase();
+  document.getElementById('adopted-pet-description').textContent = descriptions[petType] || defaultDesc;
+}
+
+function createAdoptedPetStats(pet) {
+  const statsContainer = document.getElementById('adopted-pet-stats');
+  
+  console.log('📊 Creando barras de estado para:', pet.nombre, pet);
+  
+  const stats = [
+    { 
+      label: 'Salud', 
+      value: Math.round(pet.salud || 100), 
+      class: 'health',
+      gradient: 'linear-gradient(90deg, #dc2626, #ef4444)',
+      icon: '❤️'
+    },
+    { 
+      label: 'Felicidad', 
+      value: Math.round(pet.felicidad || 100), 
+      class: 'happiness',
+      gradient: 'linear-gradient(90deg, #eab308, #fbbf24)',
+      icon: '😊'
+    },
+    { 
+      label: 'Energía', 
+      value: Math.round(pet.energia || 100), 
+      class: 'energy',
+      gradient: 'linear-gradient(90deg, #059669, #10b981)',
+      icon: '⚡'
+    },
+    { 
+      label: 'Hambre', 
+      value: Math.round(100 - (pet.hambre || 0)), // Invertir: menos hambre = más saciedad
+      class: 'hunger',
+      gradient: 'linear-gradient(90deg, #7c3aed, #8b5cf6)',
+      icon: '🍎'
+    },
+    { 
+      label: 'Limpieza', 
+      value: Math.round(pet.limpieza || 100), 
+      class: 'cleanliness',
+      gradient: 'linear-gradient(90deg, #0891b2, #06b6d4)',
+      icon: '✨'
+    }
+  ];
+  
+  console.log('📈 Valores de las barras:', stats.map(s => `${s.label}: ${s.value}%`));
+  
+  statsContainer.innerHTML = stats.map(stat => `
+    <div class="stat-bar">
+      <div class="stat-header">
+        <span class="stat-icon">${stat.icon}</span>
+        <span class="stat-label">${stat.label}:</span>
+        <span class="stat-value">${stat.value}%</span>
+      </div>
+      <div class="stat-progress">
+        <div class="stat-fill ${stat.class}" 
+             style="width: ${stat.value}%; background: ${stat.gradient}; transition: width 0.5s ease;">
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Nueva función para actualizar las barras del carrusel principal
+function updateCarouselPetStats(pet) {
+  console.log('🔄 Actualizando barras del carrusel para:', pet.nombre, pet);
+  
+  // Buscar la mascota activa en el carrusel
+  const carouselContainer = document.querySelector('#my-pets-carousel .carousel-container');
+  if (!carouselContainer) return;
+  
+  const activeCard = carouselContainer.querySelector('.pet-card.active');
+  if (!activeCard) return;
+  
+  // Verificar que sea la mascota correcta
+  const cardTitle = activeCard.querySelector('h3');
+  if (!cardTitle || cardTitle.textContent !== pet.nombre) return;
+  
+  // Actualizar cada barra de estado en el carrusel
+  const statsContainer = activeCard.querySelector('.stats-container');
+  if (statsContainer) {
+    console.log('📊 Actualizando barras del carrusel con valores:', {
+      salud: pet.salud,
+      felicidad: pet.felicidad,
+      energia: pet.energia,
+      hambre: pet.hambre,
+      limpieza: pet.limpieza
+    });
+    
+    // Actualizar barra de salud
+    const healthBar = statsContainer.querySelector('.stat-fill.health');
+    const healthValue = statsContainer.querySelector('.stat-bar:nth-child(1) .stat-value');
+    if (healthBar && healthValue) {
+      const saludValue = Math.round(pet.salud || 100);
+      healthBar.style.width = `${saludValue}%`;
+      healthValue.textContent = `${saludValue}%`;
+    }
+    
+    // Actualizar barra de felicidad
+    const happinessBar = statsContainer.querySelector('.stat-fill.happiness');
+    const happinessValue = statsContainer.querySelector('.stat-bar:nth-child(2) .stat-value');
+    if (happinessBar && happinessValue) {
+      const felicidadValue = Math.round(pet.felicidad || 100);
+      happinessBar.style.width = `${felicidadValue}%`;
+      happinessValue.textContent = `${felicidadValue}%`;
+    }
+    
+    // Actualizar barra de energía (Sueños)
+    const energyBar = statsContainer.querySelector('.stat-fill.energy');
+    const energyValue = statsContainer.querySelector('.stat-bar:nth-child(3) .stat-value');
+    if (energyBar && energyValue) {
+      const energiaValue = Math.round(pet.energia || 100);
+      energyBar.style.width = `${energiaValue}%`;
+      energyValue.textContent = `${energiaValue}%`;
+    }
+    
+    // Actualizar barra de hambre (invertida)
+    const hungerBar = statsContainer.querySelector('.stat-fill.hunger');
+    const hungerValue = statsContainer.querySelector('.stat-bar:nth-child(4) .stat-value');
+    if (hungerBar && hungerValue) {
+      const hambreValue = Math.round(pet.hambre || 0);
+      const saciedadValue = 100 - hambreValue; // Invertir para mostrar saciedad
+      hungerBar.style.width = `${saciedadValue}%`;
+      hungerValue.textContent = `${hambreValue}%`; // Mostrar hambre real, no saciedad
+    }
+    
+    // Actualizar barra de limpieza
+    const cleanlinessBar = statsContainer.querySelector('.stat-fill.cleanliness');
+    const cleanlinessValue = statsContainer.querySelector('.stat-bar:nth-child(5) .stat-value');
+    if (cleanlinessBar && cleanlinessValue) {
+      const limpiezaValue = Math.round(pet.limpieza || 100);
+      cleanlinessBar.style.width = `${limpiezaValue}%`;
+      cleanlinessValue.textContent = `${limpiezaValue}%`;
+    }
+    
+    console.log('✅ Barras del carrusel actualizadas correctamente');
+  }
+}
+
+function setupAdoptedPetEventListeners(pet) {
+  const petId = pet.id || pet._id;
+  
+  // Botón volver al dashboard
+  document.getElementById('btn-back-to-dashboard').onclick = () => {
+    hideAdoptedPetView();
+  };
+  
+  // Botones de acción
+  document.getElementById('adopted-feed').onclick = () => performPetAction(petId, 'alimentar', '🍎', pet);
+  document.getElementById('adopted-play').onclick = () => performPetAction(petId, 'jugar', '🎮', pet);
+  document.getElementById('adopted-sleep').onclick = () => performPetAction(petId, 'dormir', '😴', pet);
+  document.getElementById('adopted-clean').onclick = () => performPetAction(petId, 'limpiar', '🛁', pet);
+  document.getElementById('adopted-heal').onclick = () => performPetAction(petId, 'curar', '💊', pet);
+  document.getElementById('adopted-pet').onclick = () => performPetAction(petId, 'acariciar', '💕', pet);
+}
+
+async function performPetAction(petId, action, emoji, pet) {
+  try {
+    console.log(`${emoji} Realizando acción ${action} en mascota ${petId}`);
+    
+    // Mapear acciones a endpoints
+    const actionMap = {
+      'alimentar': 'alimentar',
+      'jugar': 'jugar', 
+      'dormir': 'dormir',
+      'limpiar': 'limpiar',
+      'acariciar': 'acariciar',
+      'curar': 'curar'
+    };
+    
+    const endpoint = actionMap[action] || action;
+    
+    // Usar el endpoint de mi-mascota que busca por ownerId en lugar de petId específico
+    const response = await authFetch(`${API_BASE}/mis-mascotas/mi-mascota/${endpoint}`, {
+      method: 'POST'
+    });
+    
+    console.log(`📡 Respuesta del servidor (${action}):`, response.status);
+    
+    if (response.ok) {
+      const result = await response.json();
+      console.log(`✅ Acción ${action} realizada:`, result);
+      
+      // Mostrar mensaje de éxito con animación
+      showActionFeedback(emoji, result.mensaje || `${action} exitoso`);
+      
+      // Actualizar las barras de estado con la mascota actualizada
+      if (result.mascota) {
+        console.log('🔄 Actualizando barras de estado con:', result.mascota);
+        
+        // Actualizar el objeto pet actual
+        Object.assign(pet, result.mascota);
+        
+        // Recrear las barras de estado con los nuevos valores
+        createAdoptedPetStats(result.mascota);
+        
+        // También actualizar en la lista de mascotas
+        const petIndex = myPets.findIndex(p => (p.id || p._id) === petId);
+        if (petIndex !== -1) {
+          myPets[petIndex] = result.mascota;
+          renderMyPets(); // Actualizar el panel izquierdo
+        }
+        
+        // IMPORTANTE: También actualizar las barras del carrusel principal
+        updateCarouselPetStats(result.mascota);
+      }
+      
+    } else {
+      const error = await response.json();
+      console.error(`❌ Error del servidor:`, error);
+      showActionFeedback('❌', error.error || 'Error al realizar la acción');
+    }
+  } catch (error) {
+    console.error(`❌ Error en acción ${action}:`, error);
+    showActionFeedback('❌', `Error al ${action}`);
+  }
+}
+
+function showActionFeedback(emoji, message) {
+  // Crear elemento de feedback
+  const feedback = document.createElement('div');
+  feedback.style.cssText = `
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, #dc2626, #ef4444);
+    color: white;
+    padding: 2rem 3rem;
+    border-radius: 20px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-align: center;
+    z-index: 2000;
+    box-shadow: 0 10px 40px rgba(220, 38, 38, 0.5);
+    animation: feedbackAnimation 3s ease-out;
+    border: 2px solid #ef4444;
+    max-width: 400px;
+    word-wrap: break-word;
+  `;
+  
+  // Mostrar emoji solo si no es un mensaje de error
+  const emojiDisplay = message.includes('Error') || message.includes('❌') ? '❌' : emoji;
+  
+  feedback.innerHTML = `
+    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">${emojiDisplay}</div>
+    <div style="text-transform: none; letter-spacing: 0.5px; line-height: 1.4;">${message}</div>
+  `;
+  
+  // Agregar CSS de animación
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes feedbackAnimation {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.5);
+      }
+      15% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.1);
+      }
+      85% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.9);
+      }
+    }
+  `;
+  document.head.appendChild(style);
+  
+  document.body.appendChild(feedback);
+  
+  // Remover después de la animación
+  setTimeout(() => {
+    document.body.removeChild(feedback);
+    document.head.removeChild(style);
+  }, 3000);
+}
+
+function hideAdoptedPetView() {
+  // Ocultar interfaz de adopción
+  document.getElementById('adopted-pet-view').classList.add('hidden');
+  
+  // Mostrar dashboard principal
+  document.getElementById('background').classList.remove('hidden');
+  
+  console.log('🔄 Volviendo al dashboard principal');
+}
 
 console.log('✅ Dashboard Moderno cargado exitosamente');

@@ -8,8 +8,28 @@ const router = express.Router();
 
 // Obtener mascotas disponibles para adoptar
 router.get('/disponibles', authenticate, async (req, res) => {
-  const disponibles = await Pet.find({ ownerId: null });
-  res.json(disponibles);
+  try {
+    console.log('🔍 ===== SOLICITUD DE MASCOTAS DISPONIBLES =====');
+    console.log('👤 Usuario solicitante:', req.user?.username || 'Unknown');
+    console.log('🆔 Usuario ID:', req.user?.id);
+    
+    const disponibles = await Pet.find({ ownerId: null });
+    console.log('📊 Total mascotas disponibles encontradas:', disponibles.length);
+    
+    if (disponibles.length > 0) {
+      console.log('🐾 Primeras 3 mascotas disponibles:');
+      disponibles.slice(0, 3).forEach((pet, index) => {
+        console.log(`   ${index + 1}. ${pet.nombre} (ID: ${pet.id || pet._id}) - Tipo: ${pet.tipo}`);
+      });
+    } else {
+      console.log('❌ No se encontraron mascotas disponibles');
+    }
+    
+    res.json(disponibles);
+  } catch (error) {
+    console.error('❌ Error obteniendo mascotas disponibles:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
 });
 
 // Adoptar una mascota
@@ -69,6 +89,33 @@ router.post('/adoptar/:petId', authenticate, async (req, res) => {
 });
 
 // Ver la mascota propia
+// Obtener todas las mascotas del usuario
+router.get('/', authenticate, async (req, res) => {
+  try {
+    console.log('🔍 ===== SOLICITUD DE MIS MASCOTAS =====');
+    console.log('👤 Usuario solicitante:', req.user?.username || 'Unknown');
+    console.log('🆔 Usuario ID:', req.user?.id);
+    
+    const misMascotas = await Pet.find({ ownerId: req.user.id });
+    console.log('📊 Total mascotas del usuario encontradas:', misMascotas.length);
+    
+    if (misMascotas.length > 0) {
+      console.log('🐾 Mascotas del usuario:');
+      misMascotas.forEach((pet, index) => {
+        console.log(`   ${index + 1}. ${pet.nombre} (ID: ${pet.id || pet._id}) - Tipo: ${pet.tipo}`);
+      });
+    } else {
+      console.log('❌ El usuario no tiene mascotas adoptadas');
+    }
+    
+    res.json(misMascotas);
+  } catch (error) {
+    console.error('❌ Error obteniendo mascotas del usuario:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+// Obtener una mascota específica del usuario (mantener compatibilidad)
 router.get('/mi-mascota', authenticate, async (req, res) => {
   const mascota = await Pet.findOne({ ownerId: req.user.id });
   if (!mascota) {
@@ -368,20 +415,354 @@ router.post('/mi-mascota/dormir', authenticate, async (req, res) => {
   res.json({ mensaje: `La mascota ha dormido y recuperado energía. Energía actual: ${mascota.energia}` });
 });
 
-// Hacer dormir a la mascota
-router.post('/mi-mascota/dormir', authenticate, async (req, res) => {
-  const mascota = await Pet.findOne({ ownerId: req.user.id });
-  if (!mascota) {
-    return res.status(404).json({ error: 'No tienes mascota adoptada' });
-  }
-  mascota.energia = Math.min(mascota.energia + 30, 100);
-  if (mascota.energia >= 75) {
-    if (mascota.enfermedad === 'fatiga') {
-      mascota.enfermedad = null;
+// Limpiar a la mascota
+router.post('/mi-mascota/limpiar', authenticate, async (req, res) => {
+  try {
+    console.log('🛁 ===== LIMPIANDO MASCOTA =====');
+    console.log('👤 Usuario:', req.user?.username);
+    
+    const mascota = await Pet.findOne({ ownerId: req.user.id });
+    if (!mascota) {
+      return res.status(404).json({ error: 'No tienes mascota adoptada' });
     }
+    
+    // Convertir valores a números y validar
+    mascota.limpieza = Number(mascota.limpieza) || 0;
+    mascota.salud = Number(mascota.salud) || 50;
+    mascota.felicidad = Number(mascota.felicidad) || 50;
+    
+    const limpiezaAnterior = mascota.limpieza;
+    
+    // Aumentar limpieza
+    mascota.limpieza = Math.min(mascota.limpieza + 25, 100);
+    
+    // Si la limpieza es alta, curar enfermedad de suciedad
+    if (mascota.limpieza >= 80 && mascota.enfermedad === 'suciedad') {
+      mascota.enfermedad = null;
+      console.log('🎉 Enfermedad de suciedad curada');
+    }
+    
+    // Pequeño aumento de felicidad
+    mascota.felicidad = Math.min(mascota.felicidad + 5, 100);
+    
+    await mascota.save();
+    
+    console.log(`✅ Mascota limpiada: ${limpiezaAnterior} → ${mascota.limpieza}`);
+    res.json({ 
+      mensaje: `${mascota.nombre} está más limpio. Limpieza: ${mascota.limpieza}%`,
+      mascota: mascota
+    });
+  } catch (error) {
+    console.error('❌ Error limpiando mascota:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
   }
-  await mascota.save();
-  res.json({ mensaje: `La mascota ha dormido y recuperado energía. Energía actual: ${mascota.energia}` });
+});
+
+// Acariciar a la mascota
+router.post('/mi-mascota/acariciar', authenticate, async (req, res) => {
+  try {
+    console.log('💕 ===== ACARICIANDO MASCOTA =====');
+    console.log('👤 Usuario:', req.user?.username);
+    
+    const mascota = await Pet.findOne({ ownerId: req.user.id });
+    if (!mascota) {
+      return res.status(404).json({ error: 'No tienes mascota adoptada' });
+    }
+    
+    // Convertir valores a números y validar
+    mascota.felicidad = Number(mascota.felicidad) || 0;
+    mascota.salud = Number(mascota.salud) || 50;
+    
+    const felicidadAnterior = mascota.felicidad;
+    
+    // Aumentar felicidad significativamente
+    mascota.felicidad = Math.min(mascota.felicidad + 15, 100);
+    
+    // Si la felicidad es alta, curar enfermedad de tristeza
+    if (mascota.felicidad >= 80 && mascota.enfermedad === 'tristeza') {
+      mascota.enfermedad = null;
+      console.log('🎉 Enfermedad de tristeza curada');
+    }
+    
+    // Pequeño aumento de salud
+    mascota.salud = Math.min(mascota.salud + 3, 100);
+    
+    await mascota.save();
+    
+    console.log(`✅ Mascota acariciada: felicidad ${felicidadAnterior} → ${mascota.felicidad}`);
+    res.json({ 
+      mensaje: `${mascota.nombre} se siente muy querido. Felicidad: ${mascota.felicidad}%`,
+      mascota: mascota
+    });
+  } catch (error) {
+    console.error('❌ Error acariciando mascota:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+// ========== ENDPOINTS PARA MÚLTIPLES MASCOTAS ==========
+
+// Alimentar mascota específica
+router.post('/:petId/alimentar', authenticate, async (req, res) => {
+  try {
+    console.log('🍎 ===== ALIMENTANDO MASCOTA =====');
+    console.log('👤 Usuario:', req.user?.username);
+    console.log('🆔 Pet ID:', req.params.petId);
+    
+    // Buscar la mascota por ID y verificar que pertenezca al usuario
+    const mascota = await Pet.findOne({ 
+      $or: [
+        { _id: req.params.petId, ownerId: req.user.id },
+        { id: req.params.petId, ownerId: req.user.id }
+      ]
+    });
+    
+    if (!mascota) {
+      console.log('❌ Mascota no encontrada o no pertenece al usuario');
+      return res.status(404).json({ error: 'Mascota no encontrada' });
+    }
+    
+    console.log('🐾 Mascota encontrada:', mascota.nombre);
+    console.log('📊 Estado antes:', {
+      hambre: mascota.hambre,
+      felicidad: mascota.felicidad,
+      energia: mascota.energia,
+      salud: mascota.salud,
+      limpieza: mascota.limpieza
+    });
+    
+    // Verificar si la mascota necesita comida
+    if (mascota.hambre <= 10) {
+      return res.status(400).json({ 
+        error: 'La mascota no tiene hambre en este momento',
+        mascota: mascota
+      });
+    }
+    
+    // Reducir hambre y aumentar felicidad
+    mascota.hambre = Math.max(0, mascota.hambre - 25);
+    mascota.felicidad = Math.min(100, mascota.felicidad + 10);
+    mascota.energia = Math.min(100, mascota.energia + 5);
+    
+    await mascota.save();
+    
+    console.log('📊 Estado después:', {
+      hambre: mascota.hambre,
+      felicidad: mascota.felicidad,
+      energia: mascota.energia,
+      salud: mascota.salud,
+      limpieza: mascota.limpieza
+    });
+    
+    res.json({ 
+      mensaje: '¡Mascota alimentada correctamente!', 
+      mascota: mascota 
+    });
+  } catch (error) {
+    console.error('❌ Error alimentando mascota:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+// Jugar con mascota específica
+router.post('/:petId/jugar', authenticate, async (req, res) => {
+  try {
+    console.log('🎮 ===== JUGANDO CON MASCOTA =====');
+    console.log('👤 Usuario:', req.user?.username);
+    console.log('🆔 Pet ID:', req.params.petId);
+    
+    const mascota = await Pet.findOne({ 
+      $or: [
+        { _id: req.params.petId, ownerId: req.user.id },
+        { id: req.params.petId, ownerId: req.user.id }
+      ]
+    });
+    
+    if (!mascota) {
+      return res.status(404).json({ error: 'Mascota no encontrada' });
+    }
+    
+    if (mascota.energia <= 15) {
+      return res.status(400).json({ 
+        error: 'La mascota está muy cansada para jugar',
+        mascota: mascota
+      });
+    }
+    
+    // Aumentar felicidad, reducir energía
+    mascota.felicidad = Math.min(100, mascota.felicidad + 20);
+    mascota.energia = Math.max(0, mascota.energia - 15);
+    mascota.hambre = Math.min(100, mascota.hambre + 10);
+    
+    await mascota.save();
+    
+    res.json({ 
+      mensaje: '¡Tiempo de juego divertido!', 
+      mascota: mascota 
+    });
+  } catch (error) {
+    console.error('❌ Error jugando con mascota:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+// Dormir mascota específica
+router.post('/:petId/dormir', authenticate, async (req, res) => {
+  try {
+    console.log('😴 ===== MASCOTA DURMIENDO =====');
+    console.log('👤 Usuario:', req.user?.username);
+    console.log('🆔 Pet ID:', req.params.petId);
+    
+    const mascota = await Pet.findOne({ 
+      $or: [
+        { _id: req.params.petId, ownerId: req.user.id },
+        { id: req.params.petId, ownerId: req.user.id }
+      ]
+    });
+    
+    if (!mascota) {
+      return res.status(404).json({ error: 'Mascota no encontrada' });
+    }
+    
+    if (mascota.energia >= 90) {
+      return res.status(400).json({ 
+        error: 'La mascota ya tiene mucha energía',
+        mascota: mascota
+      });
+    }
+    
+    // Restaurar energía y salud
+    mascota.energia = Math.min(100, mascota.energia + 30);
+    mascota.salud = Math.min(100, mascota.salud + 10);
+    mascota.felicidad = Math.min(100, mascota.felicidad + 5);
+    
+    await mascota.save();
+    
+    res.json({ 
+      mensaje: '¡La mascota ha descansado bien!', 
+      mascota: mascota 
+    });
+  } catch (error) {
+    console.error('❌ Error con descanso de mascota:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+// Limpiar mascota específica
+router.post('/:petId/limpiar', authenticate, async (req, res) => {
+  try {
+    console.log('🛁 ===== LIMPIANDO MASCOTA =====');
+    console.log('👤 Usuario:', req.user?.username);
+    console.log('🆔 Pet ID:', req.params.petId);
+    
+    const mascota = await Pet.findOne({ 
+      $or: [
+        { _id: req.params.petId, ownerId: req.user.id },
+        { id: req.params.petId, ownerId: req.user.id }
+      ]
+    });
+    
+    if (!mascota) {
+      return res.status(404).json({ error: 'Mascota no encontrada' });
+    }
+    
+    if (mascota.limpieza >= 90) {
+      return res.status(400).json({ 
+        error: 'La mascota ya está muy limpia',
+        mascota: mascota
+      });
+    }
+    
+    // Aumentar limpieza y felicidad
+    mascota.limpieza = Math.min(100, mascota.limpieza + 25);
+    mascota.felicidad = Math.min(100, mascota.felicidad + 10);
+    mascota.salud = Math.min(100, mascota.salud + 5);
+    
+    await mascota.save();
+    
+    res.json({ 
+      mensaje: '¡Mascota limpia y fresca!', 
+      mascota: mascota 
+    });
+  } catch (error) {
+    console.error('❌ Error limpiando mascota:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+// Acariciar mascota específica
+router.post('/:petId/acariciar', authenticate, async (req, res) => {
+  try {
+    console.log('💕 ===== ACARICIANDO MASCOTA =====');
+    console.log('👤 Usuario:', req.user?.username);
+    console.log('🆔 Pet ID:', req.params.petId);
+    
+    const mascota = await Pet.findOne({ 
+      $or: [
+        { _id: req.params.petId, ownerId: req.user.id },
+        { id: req.params.petId, ownerId: req.user.id }
+      ]
+    });
+    
+    if (!mascota) {
+      return res.status(404).json({ error: 'Mascota no encontrada' });
+    }
+    
+    // Aumentar felicidad y salud ligeramente
+    mascota.felicidad = Math.min(100, mascota.felicidad + 15);
+    mascota.salud = Math.min(100, mascota.salud + 8);
+    
+    await mascota.save();
+    
+    res.json({ 
+      mensaje: '¡La mascota se siente querida!', 
+      mascota: mascota 
+    });
+  } catch (error) {
+    console.error('❌ Error acariciando mascota:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+// Curar mascota específica
+router.post('/:petId/curar', authenticate, async (req, res) => {
+  try {
+    console.log('💊 ===== CURANDO MASCOTA =====');
+    console.log('👤 Usuario:', req.user?.username);
+    console.log('🆔 Pet ID:', req.params.petId);
+    
+    const mascota = await Pet.findOne({ 
+      $or: [
+        { _id: req.params.petId, ownerId: req.user.id },
+        { id: req.params.petId, ownerId: req.user.id }
+      ]
+    });
+    
+    if (!mascota) {
+      return res.status(404).json({ error: 'Mascota no encontrada' });
+    }
+    
+    if (mascota.salud >= 95) {
+      return res.status(400).json({ 
+        error: 'La mascota ya está muy saludable',
+        mascota: mascota
+      });
+    }
+    
+    // Restaurar salud significativamente
+    mascota.salud = Math.min(100, mascota.salud + 30);
+    mascota.felicidad = Math.min(100, mascota.felicidad + 5);
+    
+    await mascota.save();
+    
+    res.json({ 
+      mensaje: '¡Mascota curada correctamente!', 
+      mascota: mascota 
+    });
+  } catch (error) {
+    console.error('❌ Error curando mascota:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
 });
 
 export default router;

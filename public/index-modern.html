@@ -132,6 +132,9 @@
             <h3 class="panel-title">🚀 COMPAÑEROS ACTIVOS</h3>
             <div class="panel-controls">
               <span class="companion-count" id="my-pets-count">0 ACTIVOS</span>
+              <button class="btn-action" id="btn-view-pet-status" disabled>
+                📊 VER ESTADO
+              </button>
               <button class="btn-action" id="btn-new-pet">
                 ✨ NUEVA MISIÓN
               </button>
@@ -243,6 +246,108 @@
                 </button>
               </form>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interfaz de Mascota Adoptada -->
+  <div id="adopted-pet-view" class="hidden">
+    <div class="adopted-container">
+      <!-- Header de bienvenida -->
+      <div class="adopted-header">
+        <div class="header-content">
+          <h1 class="adoption-title">🎉 ¡RECLUTAMIENTO EXITOSO!</h1>
+          <p class="adoption-subtitle">Tu nuevo compañero se ha unido a la misión</p>
+        </div>
+        <button class="btn-back-dashboard" id="btn-back-to-dashboard">
+          ← Volver al Centro de Comando
+        </button>
+      </div>
+
+      <!-- Panel principal de la mascota -->
+      <div class="adopted-main">
+        <!-- Panel izquierdo - Avatar y nombre -->
+        <div class="pet-avatar-section">
+          <div class="pet-avatar-large" id="adopted-pet-avatar">🐕</div>
+          <div class="pet-info-basic">
+            <h2 class="pet-name-large" id="adopted-pet-name">Nombre</h2>
+            <p class="pet-type" id="adopted-pet-type">Tipo: Perro</p>
+            <p class="pet-power" id="adopted-pet-power">Poder: Ninguno</p>
+            <div class="adoption-badge">
+              <span class="badge-text">✨ RECIÉN RECLUTADO</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel derecho - Estados y acciones -->
+        <div class="pet-status-section">
+          <h3 class="status-title">📊 ESTADO DEL COMPAÑERO</h3>
+          
+          <!-- Barras de estado -->
+          <div class="stats-container-adopted" id="adopted-pet-stats">
+            <!-- Las barras se generarán aquí -->
+          </div>
+
+          <!-- Botones de acción -->
+          <div class="action-grid">
+            <button class="action-card" id="adopted-feed">
+              <div class="action-icon">🍎</div>
+              <div class="action-text">
+                <span class="action-name">ALIMENTAR</span>
+                <span class="action-desc">Reduce el hambre</span>
+              </div>
+            </button>
+            
+            <button class="action-card" id="adopted-play">
+              <div class="action-icon">🎮</div>
+              <div class="action-text">
+                <span class="action-name">JUGAR</span>
+                <span class="action-desc">Aumenta felicidad</span>
+              </div>
+            </button>
+            
+            <button class="action-card" id="adopted-sleep">
+              <div class="action-icon">😴</div>
+              <div class="action-text">
+                <span class="action-name">DESCANSAR</span>
+                <span class="action-desc">Restaura energía</span>
+              </div>
+            </button>
+            
+            <button class="action-card" id="adopted-clean">
+              <div class="action-icon">🛁</div>
+              <div class="action-text">
+                <span class="action-name">LIMPIAR</span>
+                <span class="action-desc">Mejora higiene</span>
+              </div>
+            </button>
+            
+            <button class="action-card" id="adopted-heal">
+              <div class="action-icon">💊</div>
+              <div class="action-text">
+                <span class="action-name">CURAR</span>
+                <span class="action-desc">Restaura salud</span>
+              </div>
+            </button>
+            
+            <button class="action-card" id="adopted-pet">
+              <div class="action-icon">💕</div>
+              <div class="action-text">
+                <span class="action-name">ACARICIAR</span>
+                <span class="action-desc">Vínculo especial</span>
+              </div>
+            </button>
+          </div>
+
+          <!-- Información adicional -->
+          <div class="pet-description">
+            <h4>🌟 Información del Compañero</h4>
+            <p class="pet-desc-text" id="adopted-pet-description">
+              Tu nuevo compañero está listo para unirse a las misiones espaciales. 
+              Cuida de él regularmente para mantenerlo en óptimas condiciones.
+            </p>
           </div>
         </div>
       </div>

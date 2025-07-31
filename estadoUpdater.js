@@ -52,11 +52,19 @@ async function actualizarEstados() {
         mascota.enfermedad = null;
       }
       
-      // Si la mascota tiene alguna enfermedad, disminuir la salud
+      // Sistema de salud dinámico
       if (mascota.enfermedad) {
+        // Si la mascota está enferma, la salud baja gradualmente
         const saludAnterior = mascota.salud;
-        mascota.salud = Math.max((mascota.salud || 100) - 10, 1);
+        mascota.salud = Math.max((mascota.salud || 100) - 3, 1);
         console.log(`Mascota enferma de ${mascota.enfermedad}: salud bajó de ${saludAnterior} a ${mascota.salud}`);
+      } else {
+        // Si la mascota está sana, la salud se regenera gradualmente
+        const saludAnterior = mascota.salud;
+        mascota.salud = Math.min((mascota.salud || 50) + 2, 100);
+        if (saludAnterior !== mascota.salud) {
+          console.log(`Mascota sana regenerando salud: ${saludAnterior} → ${mascota.salud}`);
+        }
       }
       try {
         await mascota.save();
